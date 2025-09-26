@@ -1,9 +1,9 @@
 # This file is the sum of the Python, Java, and C++ gitignores by GitHub
 # with a few extras
 
-# Generated stuff
-*.zip
-data/
+# Generated stuf
+# *.zip
+# data/
 
 # For Chris
 .DS_Store
@@ -12,11 +12,11 @@ desktop.ini
 
 # VisualStudioCode.gitignore
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+# !.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
