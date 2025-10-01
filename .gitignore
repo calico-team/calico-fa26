@@ -2,8 +2,8 @@
 # with a few extras
 
 # Generated stuf
-# *.zip
-# data/
+*.zip
+data/
 
 # For Chris
 .DS_Store

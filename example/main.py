@@ -19,7 +19,7 @@ problem_dir = os.path.dirname(__file__)
 
 random.seed('add_seed_600')
 p = Problem(
-        'add',
+        'add_test_fa25',
         problem_dir, # problem is in the same directory as the python source file
         test_sets=[
             Subproblem('main', rank=1),
@@ -30,12 +30,12 @@ class TestCase(NamedTuple):
     X: int
     Y: int
 
-solution = py_runner(path.join(problem_dir, 'submissions/accepted/add_arbitrary.py'))
-solution2 = cpp_runner(
-        path.join(problem_dir, 'submissions/accepted/add_int.cpp'),
-        path.join(problem_dir, 'add_int.bin'))
-validator1 = py_runner(path.join(problem_dir, 'scripts/validator_main.py'))
-validator2 = py_runner(path.join(problem_dir, 'scripts/validator.py'))
+sol = py_runner('submissions/accepted/add_arbitrary.py')
+sol2 = cpp_runner(
+        'submissions/accepted/add_int.cpp',
+        'add_int.bin')
+validator1 = py_runner('scripts/validator_main.py')
+validator2 = py_runner('scripts/validator.py')
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -58,7 +58,7 @@ class TestFile(TestFileBase):
 
     @override
     def write_test_out(self, infile: str):
-        p.print_test(solution2.exec_file(infile))
+        p.print_test(sol2.exec_file(infile))
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
@@ -80,7 +80,7 @@ for i in range(100):
 
 p.add_hidden_test(TestFile(cases), 'iota', subproblems=['bonus'])
 
-# more ways to add test cases
+# more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
     test = TestFile([])
@@ -99,8 +99,9 @@ def main():
     # resource.setrlimit(resource.RLIMIT_STACK, (268435456, 268435456))
 
     # TODO: set seed
-    solution2.compile()
-    p.run_cli()
+    def pre_fn():
+        sol2.compile()
+    p.run_cli(pre_fn)
 
     # p.init_problem()
     # p.create_all_tests()
