@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from calico_lib import Contest
 from calico_lib.judge_api import set_user
 import argparse
