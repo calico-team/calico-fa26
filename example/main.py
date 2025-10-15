@@ -30,10 +30,9 @@ class TestCase(NamedTuple):
     X: int
     Y: int
 
-sol = py_runner('submissions/accepted/add_arbitrary.py')
 sol2 = cpp_runner(
-        'submissions/accepted/add_int.cpp',
-        'add_int.bin')
+        'submissions/accepted/sol.cpp',
+        'sol.bin')
 validator1 = py_runner('scripts/validator_main.py')
 validator2 = py_runner('scripts/validator.py')
 
