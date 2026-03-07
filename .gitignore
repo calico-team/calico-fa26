@@ -5,6 +5,8 @@
 *.zip
 data/
 
+secrets.toml
+
 # For Chris
 .DS_Store
 session
