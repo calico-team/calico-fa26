@@ -17,7 +17,6 @@ from calico_lib.multicase import TestCaseBase
 
 problem_dir = os.path.dirname(__file__)
 
-random.seed('add_seed_600')
 p = Problem(
         'add_test_fa25',
         problem_dir, # problem is in the same directory as the python source file
@@ -25,7 +24,6 @@ p = Problem(
             Subproblem('main', rank=1),
             Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
             ])
-
 class TestCase(NamedTuple):
     X: int
     Y: int
@@ -35,6 +33,11 @@ sol2 = cpp_runner(
         'sol.bin')
 validator1 = py_runner('scripts/validator_main.py')
 validator2 = py_runner('scripts/validator.py')
+
+@p.pre_gen_fn
+def pre_gen_fn():
+    random.seed('add_seed_600')
+    sol2.compile()
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -98,9 +101,7 @@ def main():
     # resource.setrlimit(resource.RLIMIT_STACK, (268435456, 268435456))
 
     # TODO: set seed
-    def pre_fn():
-        sol2.compile()
-    p.run_cli(pre_fn)
+    p.run_cli()
 
     # p.init_problem()
     # p.create_all_tests()
