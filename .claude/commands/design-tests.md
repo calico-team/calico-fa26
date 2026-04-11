@@ -53,13 +53,40 @@ Comment out test sets that don't have a fast enough solution to generate answers
 
 ## run_all_tests.sh
 
-Batch test script in the problem root. Tests multiple solutions against multiple test sets in one run. Comment/uncomment sols and sets as needed for focused testing. Use `PY_CMD=python` prefix for the check command.
+Batch test script in the problem root. Tests multiple solutions against multiple test sets in one run.
+
+Key structure:
+- `SOLS` array: list all solutions (Python, then Java, then C++)
+- `SETS` array: `"setname:glob_pattern"` entries — comment/uncomment to scope the run
+- Language-specific time limits: `TL_PY=4`, `TL_JAVA=2`, `TL_CPP=1`
+- Always use `-f` (fail-fast) flag in check invocations
+- Use `PY_CMD=python3` prefix for Python, `CPP_CC="g++ -std=c++17"` for C++
+
+Example invocation per language:
+```bash
+PY_CMD=python3 ./check -t $TL_PY -f "$sol" $files 2>&1
+./check -t $TL_JAVA -f "$sol" $files 2>&1
+CPP_CC="g++ -std=c++17" ./check -t $TL_CPP -f "$sol" $files 2>&1
+```
+
+## Threshold tuning
+
+**Hard constraint**: time limits across languages are fixed ratios imposed by the judge platform — `py = 4×cpp`, `java = 2×cpp`. You cannot adjust them independently. The only lever is `constants.py`.
+
+Tuning process (one test set at a time):
+1. Run `run_all_tests.sh` with the target set active
+2. Identify the slowest solution that *should* pass — if it TLEs, lower `MAX_COORD` in `constants.py`
+3. Identify the fastest solution that *should* TLE — if it passes, lower `MAX_COORD` further
+4. After changing a threshold, run `python3 main.py` to regenerate tests, then re-run
+5. Repeat until all expected pass/TLE behaviors hold for all three languages
+
+When evaluating a threshold candidate, test all three languages — a threshold that works for C++ may still TLE the Java or Python equivalent.
 
 ## Generating tests
 
-Run `python main.py` from the problem directory. Always use a timeout to prevent runaway generation:
+Run `python3 main.py` from the problem directory. Always use a timeout to prevent runaway generation:
 ```
-timeout 120 python main.py
+timeout 120 python3 main.py
 ```
 
 The timeout should be roughly `(4s per test file) * 2x overhead`. If generation is too slow, you need a faster solution or smaller thresholds.
@@ -69,26 +96,26 @@ The timeout should be roughly `(4s per test file) * 2x overhead`. If generation 
 Use the `./check` script to verify solutions against generated test files:
 ```bash
 # Run specific tests with a time limit
-./check -t 4 submissions/accepted/sol.py data/secret/*_main.in
+PY_CMD=python3 ./check -t 4 submissions/accepted/sol.py data/secret/*_main.in
 
-# Run all tests
-./check -t 4 submissions/accepted/sol.py
+# Java (compiled by check script automatically)
+./check -t 2 submissions/accepted/sol.java data/secret/*_bonus1.in
 
-# Glob by test set
-./check -t 4 submissions/accepted/sol.py data/secret/*_bonus1.in
+# C++ with C++17
+CPP_CC="g++ -std=c++17" ./check -t 1 submissions/accepted/sol.cpp data/secret/*_bonus2.in
 
 # Stop on first error (WA or TLE)
 ./check -t 4 -f submissions/accepted/sol.py data/secret/*_bonus2.in
 ```
 
-The `-t` flag sets a per-test-file time limit in seconds. **Always use a time limit** to prevent hanging. The check script reports timing for each test and detects TLE (timeout exit code 124).
+The `-t` flag sets a per-test-file time limit in seconds. **Always use a time limit** to prevent hanging. The check script reports timing for each test and detects TLE (exit code 124 or elapsed > limit).
 
-The `-f` / `--fail-fast` flag stops execution on the first error (WA or TLE). Useful when testing wrong_answer solutions or scanning for the first failing test set.
+The `-f` / `--fail-fast` flag stops execution on the first error (WA or TLE). Use it by default.
 
 Time limit guidelines:
-- Python: 4s
+- Python: 4s (`PY_CMD=python3`)
 - Java: 2s
-- C++: 1s
+- C++: 1s (`CPP_CC="g++ -std=c++17"`)
 
 ## Wrong answer solutions
 
