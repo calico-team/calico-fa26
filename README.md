@@ -70,8 +70,7 @@ Here's how each problem directory is structured. Note that problem statements + 
 
 ### Root
 The root of the directory includes scripts and is also where zip files are created. These files include:
-- `contest.py` contains helper functions used to create the contest
-- `upload_all.py` used to merge every branch and upload every problem
+- `contest.py` contains helper functions used to create the contest and upload all the problems
 - `check` a simple script to test submissions locally
 
 ### Data
