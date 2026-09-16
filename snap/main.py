@@ -18,25 +18,25 @@ from calico_lib.multicase import TestCaseBase
 problem_dir = os.path.dirname(__file__)
 
 p = Problem(
-        'add_test_fa25',
+        'snap',
         problem_dir, # problem is in the same directory as the python source file
         test_sets=[
             Subproblem('main', rank=1),
-            Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
             ])
 class TestCase(NamedTuple):
-    X: int
-    Y: int
+    M: int
+    N: int
+    F: int
 
 sol2 = cpp_runner(
-        'submissions/accepted/sol.cpp',
+        'submissions/accepted/snap.cpp',
         'sol.bin')
 validator1 = py_runner('scripts/validator_main.py')
 validator2 = py_runner('scripts/validator.py')
 
 @p.pre_gen_fn
 def pre_gen_fn():
-    random.seed('add_seed_600')
+    random.seed('snapq02394rq2398732894723984')
     sol2.compile()
 
 class TestFile(TestFileBase):
@@ -49,7 +49,7 @@ class TestFile(TestFileBase):
         """Write the input file of this test case using print_test"""
         p.print_test(len(self.cases))
         for case in self.cases:
-            p.print_test(case.X, case.Y)
+            p.print_test(case.M, case.N, case.F)
 
     @override
     def validate_test_in(self, infile: str):
@@ -64,36 +64,20 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(4, 7),
-    TestCase(1, 23),
-    TestCase(9, 8),
-    TestCase(1, 1),
+    TestCase(4, 7, 2),
+    TestCase(1, 23, 2),
+    TestCase(9, 8, 10),
+    TestCase(1, 1, 1),
     ]))
-
-cases = []
-for i in range(80):
-    cases.append(TestCase(i+1, 80-i))
-
-p.add_hidden_test(TestFile(cases), 'iota')
     
-cases = []
-for i in range(100):
-    cases.append(TestCase(i+1, 10000-i))
-
-p.add_hidden_test(TestFile(cases), 'iota', subproblems=['bonus'])
-
 # more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
     test = TestFile([])
+    M = 100
     for i in range(10):
-        test.cases.append(TestCase(random.randint(1, 100), random.randint(1, 100)))
+        test.cases.append(TestCase(random.randint(1, M), random.randint(1, M), random.randint(1, M)))
     return test
-
-@p.hidden_test_generator(test_count=4, subproblems=['bonus'])
-def pure_random2():
-    cases = (TestCase(random.randint(70, int(1e12)), random.randint(70, int(1e12))) for _ in range(100))
-    return TestFile(cases)
 
 def main():
     # increase stack size for running solutions using heaving recursion
