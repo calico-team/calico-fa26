@@ -27,6 +27,7 @@ class TestCase(NamedTuple):
     M: int
     N: int
     F: int
+    S: list[str]
 
 sol2 = cpp_runner(
         'submissions/accepted/snap.cpp',
@@ -50,6 +51,8 @@ class TestFile(TestFileBase):
         p.print_test(len(self.cases))
         for case in self.cases:
             p.print_test(case.M, case.N, case.F)
+            for i in range(case.M):
+                p.print_test(case.S[i])
 
     @override
     def validate_test_in(self, infile: str):
@@ -64,20 +67,26 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(4, 7, 2),
-    TestCase(1, 23, 2),
-    TestCase(9, 8, 10),
-    TestCase(1, 1, 1),
+    TestCase(10, 20, 5, ["....................", 
+                         "....00..............", 
+                         '...0000.............', 
+                         '...0000.............',
+                           '....00..............',
+                           '...........1111.....',
+                           '..........111111....',
+                           '..........111111....',
+                           '..........111111....',
+                           '...........1111.....']),
     ]))
     
 # more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
-@p.hidden_test_generator(test_count=4)
-def pure_random() -> TestFile:
-    test = TestFile([])
-    M = 100
-    for i in range(10):
-        test.cases.append(TestCase(random.randint(1, M), random.randint(1, M), random.randint(1, M)))
-    return test
+#@p.hidden_test_generator(test_count=4)
+#def pure_random() -> TestFile:
+#    test = TestFile([])
+#    M = 100
+#    for i in range(10):
+#        test.cases.append(TestCase(random.randint(1, M), random.randint(1, M), random.randint(1, M)))
+#    return test
 
 def main():
     # increase stack size for running solutions using heaving recursion
