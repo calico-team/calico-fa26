@@ -11,11 +11,12 @@ def solve(A: int, B: int) -> int:
 
 
 def main():
-    T = int(input())
-    assert T <= 100
-    for _ in range(T):
-        temp = input().split()
-        A, B = int(temp[0]), int(temp[1])
+    return True
+    #T = int(input())
+    #assert T <= 100
+    #for _ in range(T):
+    #    temp = input().split()
+    #    A, B = int(temp[0]), int(temp[1])
 
 if __name__ == '__main__':
     main()

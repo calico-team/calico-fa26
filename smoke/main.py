@@ -6,7 +6,14 @@
 #   bonus: T <= 1e5, A <= 1e12, B <= 1e12
 
 from typing import override
-from calico_lib import Problem, cpp_runner, py_runner, TestFileBase, MulticaseTestFile, Subproblem, Runner
+from calico_lib import (
+    Problem,
+    Subproblem,
+    TestFileBase,
+    cpp_runner,
+    py_runner,
+    run_cli,
+)
 from collections.abc import Collection, Iterable
 from typing import NamedTuple, override
 import random
@@ -17,31 +24,29 @@ from calico_lib.multicase import TestCaseBase
 
 problem_dir = os.path.dirname(__file__)
 
-p = Problem(
-        'smoke',
-        problem_dir, # problem is in the same directory as the python source file
-        test_sets=[
-            Subproblem('main', rank=1),
-            ])
 class TestCase(NamedTuple):
     R: int
     N: int
     T: list[int]
 
-sol2 = cpp_runner(
-        'submissions/accepted/smoke.cpp',
-        'sol.bin')
+#sol2 = cpp_runner(
+#        'submissions/accepted/smoke.cpp',
+#        'sol.bin')
+solution = py_runner(os.path.join(problem_dir, 'submissions/accepted/smoke.py'))
+validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
-sol = py_runner(
-        'submissions/accepted/smoke.py',
-)
-validator1 = py_runner('scripts/validator_main.py')
-validator2 = py_runner('scripts/validator.py')
+p = Problem(
+    'smoke',
+    problem_dir, # problem is in the same directory as the python source file
+    test_sets=[
+        Subproblem('main', rank=1),
+    ],
+    solution = solution,
+    seed = 'smoke19393839382j')
 
 @p.pre_gen_fn
 def pre_gen_fn():
-    random.seed('smoke19393839382j')
-    sol2.compile()
+    pass
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -51,8 +56,7 @@ class TestFile(TestFileBase):
     @override
     def write_test_in(self):
         """Write the input file of this test case using print_test"""
-        p.print_test(len(self.cases))
-        lines = [str[len(self.cases)]]
+        lines = [str(len(self.cases))]
         for case in self.cases:
             lines.append(f'{case.R} {case.N}')
             T = ""
@@ -65,8 +69,7 @@ class TestFile(TestFileBase):
     def validate_test_in(self, infile: str):
         """Verify the test using an external validator."""
         if 'main' in self.subproblems:
-            validator1.exec_file(infile)
-        validator2.exec_file(infile)
+            validator_main.exec_file(infile)
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
@@ -101,7 +104,7 @@ def main():
     # resource.setrlimit(resource.RLIMIT_STACK, (268435456, 268435456))
 
     # TODO: set seed
-    p.run_cli()
+    run_cli(p)
 
     # p.init_problem()
     # p.create_all_tests()

@@ -2,8 +2,9 @@ from collections import deque
 
 t = int(input())
 while t:
-
-    n = int(input())
+    temp = input().split(' ')
+    r = int(temp[0])
+    n = int(temp[1])
     x = list(map(int, input().split()))
     x.sort()
 
@@ -13,7 +14,7 @@ while t:
     for y in x:
         z = dq.popleft()
         if z <= y:
-            dq.append(y + 40)
+            dq.append(y + r)
         else:
             works = False
 
