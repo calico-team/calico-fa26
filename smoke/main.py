@@ -64,7 +64,7 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(4, 7),
+    TestCase(1, 3, [20, 30, 60]),
     TestCase(1, 23),
     TestCase(9, 8),
     TestCase(1, 1),
