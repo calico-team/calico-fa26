@@ -1,7 +1,7 @@
 ![CALICO Logo](https://calico.berkeley.edu/images/banner/blocks.png)
 
-# contest-template TODO rename
-This repository contains all contest material for (TODO contest name).
+# CALICO Fall '26
+This repository contains all contest material for CALICO Fall '26.
 
 # Repository Structure
 Each problem is in the CALICO problem package format, a derivative of the [DOMjudge Problem Package Format](https://www.domjudge.org/docs/manual/7.3/problem-format.html) which is itself a derivative of the [ICPC Problem Package Format](https://icpc.io/problem-package-format/).
