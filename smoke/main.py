@@ -73,9 +73,10 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(1, 3, [20, 30, 60]),
-    TestCase(1, 3, [20, 30, 50]),
-    TestCase(1, 4, [1, 2, 41, 42]),
+    TestCase(5, 10, [20, 30, 40, 50, 60]),
+    TestCase(7, 100, [1, 2, 3, 4, 5, 6, 7]),
+    TestCase(8, 8, [5, 10, 17, 30, 36, 45, 50, 56]),
+    TestCase(10, 5, [20, 70, 90, 110, 150])
 ]))
 
 # more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
