@@ -4,25 +4,23 @@
 using namespace std;
 
 string solve() {
-    int n;
-    cin>>n;
+    int n, r;
+    cin>>n>>r;
     vector<int> times(n+1);
     times[0] = 0;
 
     for(int i = 0; i<n; ++i){
         cin>>times[i+1];
     }
-
-    sort(times.begin(),times.end()); // we can remove this line if we make the input sorted
     
-    int wait = 80;
+    int wait = 2*r;
     
     for(int i = 1; i<=n; ++i){
         wait += times[i]-times[i-1];
-        wait = min(80, wait);
+        wait = min(2*r, wait);
         
-        if(wait >= 40){
-            wait -= 40;
+        if(wait >= r){
+            wait -= r;
         }else{
             return "NO";
         }
