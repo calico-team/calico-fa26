@@ -1,22 +1,24 @@
 from collections import deque
 
-t = int(input())
-while t:
-    temp = input().split(' ')
-    r = int(temp[0])
-    n = int(temp[1])
-    x = list(map(int, input().split()))
-    x.sort()
+def solve(N, R, A):
+	dq = deque([0, 0])
 
-    dq = deque([0, 0])
-    works = True
+	for a in A:
+		r = dq.popleft()
+		if r <= a:
+			dq.append(r + R)
+		else:
+			return "NO"
+	return "YES"
 
-    for y in x:
-        z = dq.popleft()
-        if z <= y:
-            dq.append(y + r)
-        else:
-            works = False
+def main():
+	T = int(input())
+	for _ in range(T):
+		temp = input().split()
+		N = int(temp[0])
+		R = int(temp[1])
+		A = list(map(int, input().split()))
+		print(solve(N, R, A))
 
-    print("YES" if works else "NO")
-    t -= 1
+if __name__ == '__main__':
+	main()

@@ -27,11 +27,11 @@ problem_dir = os.path.dirname(__file__)
 class TestCase(NamedTuple):
     R: int
     N: int
-    T: list[int]
+    A: list[int]
 
-#sol2 = cpp_runner(
-#        'submissions/accepted/smoke.cpp',
-#        'sol.bin')
+#solution = cpp_runner(
+#    os.path.join(problem_dir, 'submissions/accepted/smoke.cpp'),
+#    os.path.join(problem_dir, 'smoke.bin'))
 solution = py_runner(os.path.join(problem_dir, 'submissions/accepted/smoke.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
@@ -47,6 +47,7 @@ p = Problem(
 @p.pre_gen_fn
 def pre_gen_fn():
     pass
+    #solution.compile()
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -59,10 +60,10 @@ class TestFile(TestFileBase):
         lines = [str(len(self.cases))]
         for case in self.cases:
             lines.append(f'{case.R} {case.N}')
-            T = ""
-            for t in case.T:
-                T += str(t) + " "
-            lines.append(T)
+            A = ""
+            for a in case.A:
+                A += str(a) + " "
+            lines.append(A)
         return "\n".join(lines) + "\n"
 
     @override
@@ -87,11 +88,11 @@ def pure_random() -> TestFile:
         R = random.randint(20, 200)
         N = random.randint(1, 100)
         t = 0
-        T = []
-        while len(T) < N:
-            t += random.randint(1, 100)
-            T.append(t)
-        test.cases.append(TestCase(R, N, T))
+        A = []
+        while len(A) < N:
+            a += random.randint(1, 100)
+            A.append(a)
+        test.cases.append(TestCase(R, N, A))
     return test
 
 # @p.hidden_test_generator(test_count=4)
