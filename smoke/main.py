@@ -25,8 +25,8 @@ from calico_lib.multicase import TestCaseBase
 problem_dir = os.path.dirname(__file__)
 
 class TestCase(NamedTuple):
-    R: int
     N: int
+    R: int
     A: list[int]
 
 #solution = cpp_runner(
@@ -59,7 +59,7 @@ class TestFile(TestFileBase):
         """Write the input file of this test case using print_test"""
         lines = [str(len(self.cases))]
         for case in self.cases:
-            lines.append(f'{case.R} {case.N}')
+            lines.append(f'{case.N} {case.R}')
             A = ""
             for a in case.A:
                 A += str(a) + " "
@@ -77,22 +77,23 @@ p.add_sample_test(TestFile([
     TestCase(5, 10, [20, 30, 40, 50, 60]),
     TestCase(7, 100, [1, 2, 3, 4, 5, 6, 7]),
     TestCase(8, 8, [5, 10, 17, 30, 36, 45, 50, 56]),
-    TestCase(10, 5, [20, 70, 90, 110, 150])
+    TestCase(5, 10, [20, 70, 90, 110, 150])
 ]))
 
 # more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
     test = TestFile([])
-    for i in range(10):
-        R = random.randint(20, 200)
-        N = random.randint(1, 100)
-        t = 0
+    T = random.randint(10, 100)
+    for i in range(T):
+        R = random.randint(20, 1000)
+        N = random.randint(1, 1000)
+        a = 0
         A = []
         while len(A) < N:
-            a += random.randint(1, 100)
+            a += random.randint(1, 10000//N)
             A.append(a)
-        test.cases.append(TestCase(R, N, A))
+        test.cases.append(TestCase(N, R, A))
     return test
 
 # @p.hidden_test_generator(test_count=4)
