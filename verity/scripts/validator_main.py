@@ -1,13 +1,15 @@
-def solve(A: int, B: int) -> int:
+def solve(N: int, K: int, A: list[str], solution: list[str]) -> int:
     """
     Return the sum of A and B.
     
     A: a non-negative integer
     B: another non-negative integer
     """
-    assert A <= 100
-    assert B <= 100
-    return 0
+
+    assert N <= 100
+    assert K <= 26
+    assert len(A) == K
+    assert len(solution) == N
 
 
 def main():
@@ -15,7 +17,12 @@ def main():
     assert T <= 100
     for _ in range(T):
         temp = input().split()
-        A, B = int(temp[0]), int(temp[1])
+        N, K = int(temp[0]), int(temp[1])
+        A = input().split()
+        solution = ''.join(input().split())
+
+        solve(N, K, A, solution)
+
 
 if __name__ == '__main__':
     main()

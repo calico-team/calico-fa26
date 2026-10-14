@@ -7,6 +7,7 @@
 
 import os
 import random
+import string
 from collections.abc import Iterable
 from typing import NamedTuple, override
 
@@ -22,35 +23,28 @@ from calico_lib import (
 # All generated files live under this directory.
 problem_dir = os.path.dirname(__file__)
 
-# Reference solution (auto-generates answers) and input validators.
+# Input validators.
 # Paths are absolute so generation works from any working directory.
-solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
-# ``solution`` is run to produce every answer, so you don't need to override
-# ``write_test_out``. ``seed`` is handled by the library: it calls
-# ``random.seed`` before each test, so you can't forget to seed.
+# ``seed`` is handled by the library: it calls ``random.seed`` before each test,
+# so you can't forget to seed. For interactive problems, set solution=None.
 p = Problem(
-    'add_test_fa25',
+    'add_test_fa26',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=1),
+        Subproblem('main', rank=1, time_limit= 2, mem_limit= 1_000_000_000), #is the mem limit always a million?
         Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
     ],
-    solution=solution,
+    solution=None,
     seed='add_seed_600')
 
 class TestCase(NamedTuple):
-    X: int
-    Y: int
-
-@p.pre_gen_fn
-def pre_gen_fn():
-    """Compile the cpp solution once before generation (the library won't)."""
-    solution.compile()
+    N: int
+    K: int
+    A: list[str]
+    solution: list[str]
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -59,11 +53,18 @@ class TestFile(TestFileBase):
 
     @override
     def write_test_in(self) -> str:
-        """Return the full input: the case count, then one ``X Y`` per case."""
+        """Return the full input: case count, then N, K, A, and secret solution per case."""
         lines = [str(len(self.cases))]
         for case in self.cases:
-            lines.append(f'{case.X} {case.Y}')
+            lines.append(f'{case.N} {case.K}')
+            lines.append(' '.join(case.A))
+            lines.append(''.join(case.solution).replace(' ', ''))
         return '\n'.join(lines) + '\n'
+
+    @override
+    def write_test_out(self, infile: str = '') -> str:
+        """Interactive problems do not write static .out files."""
+        return ''
 
     @override
     def validate_test_in(self, infile: str) -> None:
@@ -75,32 +76,43 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(4, 7),
-    TestCase(1, 23),
-    TestCase(9, 8),
-    TestCase(1, 1),
+    TestCase(4, 2, ['A', 'B'], ['A', 'B', 'A', 'B']),
+    TestCase(1, 1, ['X'], ['X']),
 ]))
 
 # Hidden tests are secret (not shown to contestants).
 
 # A hard-coded test is just an explicit list of cases.
 p.add_hidden_test(TestFile([
-    TestCase(1, 1),
-    TestCase(100, 100),
-    TestCase(1, 100),
+    TestCase(1, 1, ['A'], ['A']),
+    TestCase(2, 2, ['A', 'B'], ['B', 'A']),
 ]), 'edges')
 
 # Anything built from a loop or ``random`` should be a factory, not an
 # instance: the factory runs after the library has seeded ``random``.
 def iota() -> TestFile:
-    """Generate 80 cases: X counts up 1..80, Y counts down 80..1."""
-    return TestFile([TestCase(i + 1, 80 - i) for i in range(80)])
+    """Generate cases with increasing N and structured input."""
+    cases = []
+    for i in range(80):
+        n = i + 1
+        k = min(26, max(1, 80 - i))
+        type_of_ity = list(string.ascii_uppercase[:k])
+        answer = [random.choice(type_of_ity) for _ in range(n)]
+        cases.append(TestCase(n, k, type_of_ity, answer))
+    return TestFile(cases)
 
 p.add_hidden_test(iota, 'iota')
 
 def iota_bonus() -> TestFile:
-    """Generate 100 bonus-sized cases: X up 1..100, Y down 10000..9901."""
-    return TestFile([TestCase(i + 1, 10000 - i) for i in range(100)])
+    """Generate 100 bonus-sized cases."""
+    cases = []
+    for i in range(100):
+        n = (i + 1) * 10
+        k = 26
+        type_of_ity = list(string.ascii_uppercase)
+        answer = [random.choice(type_of_ity) for _ in range(n)]
+        cases.append(TestCase(n, k, type_of_ity, answer))
+    return TestFile(cases)
 
 p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
 
@@ -110,14 +122,27 @@ def pure_random() -> TestFile:
     """Generate a test file with 10 random cases, valid for every subproblem."""
     test = TestFile([])
     for _ in range(10):
-        test.cases.append(TestCase(random.randint(1, 100), random.randint(1, 100)))
+        n = random.randint(1, 100)
+        k = random.randint(1, 26)
+        typeOfIty = random.sample(string.ascii_uppercase, k)
+        answer = []
+        for _ in range(n):
+            answer.append(random.choice(typeOfIty))
+
+        test.cases.append(TestCase(n, k, typeOfIty, answer))
     return test
 
 @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
 def pure_random2() -> TestFile:
     """Generate a test file with 100 random bonus-sized cases."""
-    cases = (TestCase(random.randint(70, int(1e12)), random.randint(70, int(1e12))) for _ in range(100))
-    return TestFile(cases)
+    test = TestFile([])
+    for _ in range(100):
+        n = random.randint(100, 1000)
+        k = random.randint(1, 26)
+        typeOfIty = random.sample(string.ascii_uppercase, k)
+        answer = [random.choice(typeOfIty) for _ in range(n)]
+        test.cases.append(TestCase(n, k, typeOfIty, answer))
+    return test
 
 def main():
     # Run cli (try `python main.py --help`)
