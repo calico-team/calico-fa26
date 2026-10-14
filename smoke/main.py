@@ -46,8 +46,8 @@ p = Problem(
 
 @p.pre_gen_fn
 def pre_gen_fn():
-    pass
-    #solution.compile()
+    #pass
+    solution.compile()
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -74,7 +74,7 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(5, 10, [20, 25, 30, 35, 40]),
+    TestCase(5, 10, [20, 30, 40, 50, 60]),
     TestCase(7, 100, [1, 2, 3, 4, 5, 6, 7]),
     TestCase(8, 5, [5, 10, 17, 30, 36, 45, 50, 56]),
     TestCase(9, 30, [20, 70, 80, 90, 100, 190, 210, 220, 250])

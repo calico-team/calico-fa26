@@ -1,15 +1,17 @@
-from collections import deque
-
 def solve(N, R, A):
-	dq = deque([0, 0])
-
+	recharging = []
 	for a in A:
-		r = dq.popleft()
-		if r <= a:
-			dq.append(a + R)
+		while recharging and recharging[0] <= a:
+			recharging.pop(0)
+
+		if len(recharging) == 2:
+			return 'NO'
+		elif len(recharging) == 1:
+			recharging.append(recharging[0] + R)
 		else:
-			return "NO"
-	return "YES"
+			recharging.append(a + R)
+
+	return 'YES'
 
 def main():
 	T = int(input())
