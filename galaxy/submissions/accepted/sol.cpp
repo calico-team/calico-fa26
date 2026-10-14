@@ -1,21 +1,39 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-/**
- * Implements addition with CPP's fixed precision int. This passes the main test
- * set only.
- */
-int solve(int A, int B) {
-    return A + B;
+string solve(int N, int M, vector<string>& G) {
+    stack<pair<int, int>> s({{0,0}});
+    vector<pair<int, int>> dirs = {{-1,-1}, {-1,1}, {1,-1}, {1,1}};
+    while (!s.empty()) {
+        auto [row, col] = s.top();
+        s.pop();
+        if (row == N and col == M) {
+            return "YES";
+        }
+        for (auto [dr, dc] : dirs) {
+            if (row+dr >= 0 && row+dr < N && col+dc >= 0 and col+dc < M) {
+                char cur = G[row][col];
+                char nxt = G[row+dr][col+dc];
+                if (cur == nxt || cur == '.' || nxt == '.') {
+                    s.push({row+dr, col+dc});
+                }
+            }
+        }
+        return "NO";
+    }
 }
 
 int main() {
     int T;
     cin >> T;
     for (int i = 0; i < T; i++) {
-        int A, B;
-        cin >> A >> B;
-        cout << solve(A, B) << '\n';
+        int N, M;
+        cin >> N >> M;
+        vector<string> G(N);
+        for (int j = 0; j < N; j++) {
+            cin >> G[j];
+        }
+        cout << solve(N, M, G) << '\n';
     }
 }
