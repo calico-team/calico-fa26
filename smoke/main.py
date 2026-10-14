@@ -74,10 +74,10 @@ class TestFile(TestFileBase):
 
 # adds to all subproblems by default
 p.add_sample_test(TestFile([
-    TestCase(5, 10, [20, 30, 40, 50, 60]),
+    TestCase(5, 10, [20, 25, 30, 35, 40]),
     TestCase(7, 100, [1, 2, 3, 4, 5, 6, 7]),
-    TestCase(8, 8, [5, 10, 17, 30, 36, 45, 50, 56]),
-    TestCase(5, 10, [20, 70, 90, 110, 150])
+    TestCase(8, 5, [5, 10, 17, 30, 36, 45, 50, 56]),
+    TestCase(9, 30, [20, 70, 80, 90, 100, 190, 210, 220, 250])
 ]))
 
 # more ways to add test cases. This is preferred, since running the function is offloaded to run only at test generation.
@@ -86,12 +86,12 @@ def pure_random() -> TestFile:
     test = TestFile([])
     T = random.randint(10, 100)
     for i in range(T):
-        R = random.randint(20, 1000)
-        N = random.randint(1, 1000)
+        R = random.randint(20, 100)
+        N = random.randint(10, 100)
         a = 0
         A = []
         while len(A) < N:
-            a += random.randint(1, 10000//N)
+            a += random.randint(1, 10000 // N)
             A.append(a)
         test.cases.append(TestCase(N, R, A))
     return test

@@ -6,7 +6,7 @@ def solve(N, R, A):
 	for a in A:
 		r = dq.popleft()
 		if r <= a:
-			dq.append(r + R)
+			dq.append(a + R)
 		else:
 			return "NO"
 	return "YES"
