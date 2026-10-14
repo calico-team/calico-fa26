@@ -2,7 +2,10 @@ def solve(N, R, A):
 	assert N == len(A), f'N={N}, len(A)={len(A)}'
 	assert N <= 1000
 	assert R <= 1000
-	for a in A:
+	for i in range(N):
+		a = A[i]
+		if i != 0:
+			assert a > A[i-1]
 		assert a <= 10000, f'a={a}'
 	
 def main():
