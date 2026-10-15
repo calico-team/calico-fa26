@@ -34,18 +34,19 @@ validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'
 # ``write_test_out``. ``seed`` is handled by the library: it calls
 # ``random.seed`` before each test, so you can't forget to seed.
 p = Problem(
-    'add_test_fa25',
+    'galaxy',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=1),
-        Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
+        Subproblem('main', rank=2),
+        # Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
     ],
     solution=solution,
-    seed='add_seed_600')
+    seed='mario')
 
 class TestCase(NamedTuple):
-    X: int
-    Y: int
+    N: int
+    M: int 
+    G: list[str]
 
 @p.pre_gen_fn
 def pre_gen_fn():
@@ -62,7 +63,8 @@ class TestFile(TestFileBase):
         """Return the full input: the case count, then one ``X Y`` per case."""
         lines = [str(len(self.cases))]
         for case in self.cases:
-            lines.append(f'{case.X} {case.Y}')
+            lines.append(f'{case.N} {case.M}')
+            lines += case.G
         return '\n'.join(lines) + '\n'
 
     @override
@@ -75,49 +77,58 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(4, 7),
-    TestCase(1, 23),
-    TestCase(9, 8),
-    TestCase(1, 1),
+    TestCase(2,4,[".R.B", ".RRB"]),
+    TestCase(2,4,[".RB.", ".RB."]),
+    TestCase(9,9,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"])
 ]))
 
 # Hidden tests are secret (not shown to contestants).
 
 # A hard-coded test is just an explicit list of cases.
-p.add_hidden_test(TestFile([
-    TestCase(1, 1),
-    TestCase(100, 100),
-    TestCase(1, 100),
-]), 'edges')
+# p.add_hidden_test(TestFile([
+#     TestCase(1, 1),
+#     TestCase(100, 100),
+#     TestCase(1, 100),
+# ]), 'edges')
 
-# Anything built from a loop or ``random`` should be a factory, not an
-# instance: the factory runs after the library has seeded ``random``.
-def iota() -> TestFile:
-    """Generate 80 cases: X counts up 1..80, Y counts down 80..1."""
-    return TestFile([TestCase(i + 1, 80 - i) for i in range(80)])
+# # Anything built from a loop or ``random`` should be a factory, not an
+# # instance: the factory runs after the library has seeded ``random``.
+# def iota() -> TestFile:
+#     """Generate 80 cases: X counts up 1..80, Y counts down 80..1."""
+#     return TestFile([TestCase(i + 1, 80 - i) for i in range(80)])
 
-p.add_hidden_test(iota, 'iota')
+# p.add_hidden_test(iota, 'iota')
 
-def iota_bonus() -> TestFile:
-    """Generate 100 bonus-sized cases: X up 1..100, Y down 10000..9901."""
-    return TestFile([TestCase(i + 1, 10000 - i) for i in range(100)])
+# def iota_bonus() -> TestFile:
+#     """Generate 100 bonus-sized cases: X up 1..100, Y down 10000..9901."""
+#     return TestFile([TestCase(i + 1, 10000 - i) for i in range(100)])
 
-p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
+# p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
-    """Generate a test file with 10 random cases, valid for every subproblem."""
+    """Generate a test file with 100 random cases, valid for every subproblem."""
     test = TestFile([])
-    for _ in range(10):
-        test.cases.append(TestCase(random.randint(1, 100), random.randint(1, 100)))
+    for _ in range(100):
+        N, M = random.randint(1, 1000), random.randint(1, 1000)
+        G = []
+        for i in range(N):
+            row = ""
+            for j in range(M):
+                if i == 0 and j == 0:
+                    row += random.choice(['B', '.'])
+                else:
+                    row += random.choice(['R', 'B', '.'])
+            G.append(row)
+        test.cases.append(TestCase(N, M, G))
     return test
 
-@p.hidden_test_generator(test_count=4, subproblems=['bonus'])
-def pure_random2() -> TestFile:
-    """Generate a test file with 100 random bonus-sized cases."""
-    cases = (TestCase(random.randint(70, int(1e12)), random.randint(70, int(1e12))) for _ in range(100))
-    return TestFile(cases)
+# @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
+# def pure_random2() -> TestFile:
+#     """Generate a test file with 100 random bonus-sized cases."""
+#     cases = (TestCase(random.randint(70, int(1e12)), random.randint(70, int(1e12))) for _ in range(100))
+#     return TestFile(cases)
 
 def main():
     # Run cli (try `python main.py --help`)
