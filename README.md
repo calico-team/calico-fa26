@@ -21,14 +21,14 @@ To get started, make a copy of an example repo folder in your branch and rename 
 
 ## Building
 
-### Making Data
-Run `./make_data.py` or `python3 make_data.py` to make test data files. You can optionally use the `-v` argument to show debug prints.
+### Dependencies
+Install `calico_lib`
+```
+pip install --upgrade calico_lib
+```
 
-### Making Zips
-Run `./make_zips.py` or `python3 make_zips.py` to make DOMjudge zip files. You can optionally use the following arguments:
-- `v` see debug prints
-- `d` also make data before zipping
-- `r` create release version without * in DOMjudge name
+### Making Data and zips
+Run `./main.py` or `python3 main.py` to make test data files. You can optionally use the `-v` argument to show debug prints.
 
 Here's how each problem directory is structured. Note that problem statements + editorials should NOT be included in the internal repo, we'll add them in when we create the public versions of these repos!
 
@@ -38,8 +38,7 @@ Here's how each problem directory is structured. Note that problem statements + 
 [problem name]
 ├── calico_lib.py
 ├── check
-├── make_data.py
-├── make_zips.py
+├── main.py
 ├── [problem name]_[test set].zip
 ├── ...
 ├── data
@@ -71,15 +70,11 @@ Here's how each problem directory is structured. Note that problem statements + 
 
 ### Root
 The root of the directory includes scripts and is also where zip files are created. These files include:
-- `calico_lib.py` contains helper functions used by other scripts
-- `make_data.py` used to make test data
-- `make_zips.py` used to create zips
+- `contest.py` contains helper functions used to create the contest and upload all the problems
 - `check` a simple script to test submissions locally
 
 ### Data
 These are the inputs and outputs we use to test your submission for correctness. Input files have the `.in` extension and corresponding output files have the `.ans` extension with the same file name.
-
-All test files regardless of test set should be placed here. The `make_zips.py` script will determine which files get added to which test set when zips are created.
 
 #### Sample
 These are tests whose contents are visible when you upload to the judge. Use these to give the general idea of the problem and hint at edge cases.
