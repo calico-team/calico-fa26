@@ -1,14 +1,16 @@
 def solve(N: int, M: int, G: list[str]) -> str:
     stack = [(0,0)]
+    visited = [[False] * M for _ in range(N)]
     dirs = [(-1,-1), (-1,1), (1,-1), (1,1)]
     while stack:
         row, col = stack.pop()
-        if row == N and col == M:
+        if row == N-1 and col == M-1:
             return "YES"
+        visited[row][col] = True
         for dr, dc in dirs:
             if row+dr >= 0 and row+dr < N and col+dc >= 0 and col+dc < M:
                 cur, nxt = G[row][col], G[row+dr][col+dc]
-                if cur == nxt or cur == "." or nxt == ".":
+                if not visited[row+dr][col+dc] and (cur == nxt or cur == "." or nxt == "."):
                     stack.append((row+dr, col+dc))
     return "NO"
 
