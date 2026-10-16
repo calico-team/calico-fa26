@@ -22,3 +22,6 @@ def main():
         for _ in range(N):
             G.append(input())
         print(solve(N, M, G))
+
+if __name__ == '__main__':
+    main()

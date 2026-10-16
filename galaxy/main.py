@@ -115,7 +115,7 @@ def pure_random() -> TestFile:
     """Generate a test file with 100 random cases, valid for every subproblem."""
     test = TestFile([])
     for _ in range(100):
-        N, M = random.randint(1, 1000), random.randint(1, 1000)
+        N, M = random.randint(1, 200), random.randint(1, 200)
         G = []
         for i in range(N):
             row = ""

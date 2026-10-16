@@ -1,6 +1,6 @@
 def solve(N: int, M: int, G: list[str]) -> int:
-    assert 1 <= N <= 1000
-    assert 1 <= M <= 1000
+    assert 1 <= N <= 200
+    assert 1 <= M <= 200
     assert G[0][0] in ['B', '.']
     assert len(G) == N
     for row in G:
