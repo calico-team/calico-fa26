@@ -14,19 +14,23 @@ from calico_lib import (
     Problem,
     Subproblem,
     TestFileBase,
-    cpp_runner,
     py_runner,
     run_cli,
 )
+from calico_lib import runner
 
 # All generated files live under this directory.
 problem_dir = os.path.dirname(__file__)
 
 # Reference solution (auto-generates answers) and input validators.
 # Paths are absolute so generation works from any working directory.
-solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
+# Built by hand instead of with ``cpp_runner``, which prepends './' to any path
+# not starting with '/' and so breaks on Windows absolute paths (C:\...).
+sol_bin = os.path.join(problem_dir, 'sol.bin')
+solution = runner.Runner(
+    [sol_bin],
+    [runner.CC, '-Wall', '-Wshadow', '-Wextra', '-O2', '-o', sol_bin,
+     os.path.join(problem_dir, 'submissions/accepted/sol.cpp')])
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
