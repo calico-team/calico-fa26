@@ -1,4 +1,4 @@
-def solve(N: int, K: int, A: list[str], solution: list[str]) -> int:
+def solve(N: int, K: int, A: list[str]):
     """
     Return the sum of A and B.
     
@@ -9,7 +9,8 @@ def solve(N: int, K: int, A: list[str], solution: list[str]) -> int:
     assert N <= 100
     assert K <= 26
     assert len(A) == K
-    assert len(solution) == N
+    
+    return 
 
 
 def main():
@@ -19,9 +20,8 @@ def main():
         temp = input().split()
         N, K = int(temp[0]), int(temp[1])
         A = input().split()
-        solution = ''.join(input().split())
 
-        solve(N, K, A, solution)
+        solve(N, K, A)
 
 
 if __name__ == '__main__':

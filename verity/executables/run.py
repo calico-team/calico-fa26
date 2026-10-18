@@ -1,6 +1,6 @@
-
 import sys
 import io
+import random
 
 _log = []
 
@@ -23,33 +23,40 @@ def run():
 
         N, K = map(int, input_test_in().split())
         alphabet = input_test_in().split()
-        solution = input_test_in().strip()
+
+        solution = ''
+        for i in range(N):
+            solution += random.choice(alphabet)
 
         print_prog(f"{N} {K}")
         print_prog(" ".join(alphabet))
 
+        num_guesses = 0
+
         while True:
-            cmd, args = parse_query(input_prog())
+            if num_guesses > 100:
+                give_WA('Exceeded maximum number of allowed guesses.')
 
-            if cmd == "?":
-                query = args[0]
+            guess = str(input_prog())
+            num_guesses += 1
 
-                feedback = []
-                for i in range(N):
-                    if query[i] == solution[i]:
-                        feedback.append(solution[i])
-                    else:
-                        feedback.append('.')
+            if len(guess) > N:
+                give_WA('Invalid guess: too long')
 
-                print_prog(''.join(feedback))
+            if guess == solution:
+                print_prog('CORRECT')
+                break
 
-            elif cmd == '!':
-                if len(args) == 1 and args[0] == solution:
-                    break
+            feedback = []
+            for i in range(N):
+                if guess[i] not in alphabet:
+                    give_WA('Invalid character: "{guess[i]}"')
+                if guess[i] == solution[i]:
+                    feedback.append(solution[i])
                 else:
-                    give_WA('Wrong answer')
-            else:
-                give_WA("Invalid command")
+                    feedback.append('_')
+
+            print_prog(''.join(feedback))
 
     give_AC()
 

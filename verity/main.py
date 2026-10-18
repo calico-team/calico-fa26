@@ -31,20 +31,18 @@ validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'
 # ``seed`` is handled by the library: it calls ``random.seed`` before each test,
 # so you can't forget to seed. For interactive problems, set solution=None.
 p = Problem(
-    'add_test_fa26',
+    'verity',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=1, time_limit= 2, mem_limit= 1_000_000_000), #is the mem limit always a million?
-        Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
+        Subproblem('main', rank=1)
     ],
     solution=None,
-    seed='add_seed_600')
+    seed='VERITYFALSITYVERITYVERITYCRUELTY')
 
 class TestCase(NamedTuple):
     N: int
     K: int
     A: list[str]
-    solution: list[str]
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -58,7 +56,6 @@ class TestFile(TestFileBase):
         for case in self.cases:
             lines.append(f'{case.N} {case.K}')
             lines.append(' '.join(case.A))
-            lines.append(''.join(case.solution).replace(' ', ''))
         return '\n'.join(lines) + '\n'
 
     @override
@@ -69,79 +66,26 @@ class TestFile(TestFileBase):
     @override
     def validate_test_in(self, infile: str) -> None:
         """Run the validators against the input written at ``infile``."""
-        # main has tighter constraints (A, B <= 100).
-        if 'main' in self.subproblems:
-            validator_main.exec_file(infile)
-        validator.exec_file(infile)
+        validator_main.exec_file(infile)
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(4, 2, ['A', 'B'], ['A', 'B', 'A', 'B']),
-    TestCase(1, 1, ['X'], ['X']),
+    TestCase(4, 4, ['L', 'C', 'F', 'V']),
+    TestCase(10, 5, ['A', 'B', 'C', 'D', 'E']),
 ]))
-
-# Hidden tests are secret (not shown to contestants).
-
-# A hard-coded test is just an explicit list of cases.
-p.add_hidden_test(TestFile([
-    TestCase(1, 1, ['A'], ['A']),
-    TestCase(2, 2, ['A', 'B'], ['B', 'A']),
-]), 'edges')
-
-# Anything built from a loop or ``random`` should be a factory, not an
-# instance: the factory runs after the library has seeded ``random``.
-def iota() -> TestFile:
-    """Generate cases with increasing N and structured input."""
-    cases = []
-    for i in range(80):
-        n = i + 1
-        k = min(26, max(1, 80 - i))
-        type_of_ity = list(string.ascii_uppercase[:k])
-        answer = [random.choice(type_of_ity) for _ in range(n)]
-        cases.append(TestCase(n, k, type_of_ity, answer))
-    return TestFile(cases)
-
-p.add_hidden_test(iota, 'iota')
-
-def iota_bonus() -> TestFile:
-    """Generate 100 bonus-sized cases."""
-    cases = []
-    for i in range(100):
-        n = (i + 1) * 10
-        k = 26
-        type_of_ity = list(string.ascii_uppercase)
-        answer = [random.choice(type_of_ity) for _ in range(n)]
-        cases.append(TestCase(n, k, type_of_ity, answer))
-    return TestFile(cases)
-
-p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
     """Generate a test file with 10 random cases, valid for every subproblem."""
     test = TestFile([])
-    for _ in range(10):
-        n = random.randint(1, 100)
-        k = random.randint(1, 26)
-        typeOfIty = random.sample(string.ascii_uppercase, k)
-        answer = []
-        for _ in range(n):
-            answer.append(random.choice(typeOfIty))
+    T = random.randint(10, 100)
+    for _ in range(T):
+        N = random.randint(1, 100)
+        K = random.randint(1, 26)
+        A = random.sample(string.ascii_uppercase, K)
 
-        test.cases.append(TestCase(n, k, typeOfIty, answer))
-    return test
-
-@p.hidden_test_generator(test_count=4, subproblems=['bonus'])
-def pure_random2() -> TestFile:
-    """Generate a test file with 100 random bonus-sized cases."""
-    test = TestFile([])
-    for _ in range(100):
-        n = random.randint(100, 1000)
-        k = random.randint(1, 26)
-        typeOfIty = random.sample(string.ascii_uppercase, k)
-        answer = [random.choice(typeOfIty) for _ in range(n)]
-        test.cases.append(TestCase(n, k, typeOfIty, answer))
+        test.cases.append(TestCase(N, K, A))
     return test
 
 def main():
