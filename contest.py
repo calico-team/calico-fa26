@@ -71,8 +71,8 @@ def main():
                  datetime(2026, 4, 11, 16), # bro it's 16 not 4
                  '3:00:00',
                  problems = problem_list)
-    ct = Contest('calico-sp26-testing',
-                "[Testing] CALICO Spring '26",
+    ct = Contest('calico-fa26-testing',
+                "[Testing] CALICO Fall '26",
                  problems = problem_list)
 
     run_cli(ct)
