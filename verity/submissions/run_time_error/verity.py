@@ -1,12 +1,12 @@
 def solve(N: int, K: int, A: list[str]):
 	guess = '_' * N
-	for _ in range(K):
-		for i in range(N):
+	for i in range(K):
+		for j in range(N):
 			new_guess = ''
-			if guess[i] == '_':
+			if guess[j] == '_':
 				new_guess += A[i]
 			else:
-				new_guess += guess[i]
+				new_guess += guess[j]
 
 		print(new_guess)
 		guess = input()

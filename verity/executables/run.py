@@ -1,15 +1,9 @@
-import sys
+#!/usr/bin/env python3
 import io
 import random
+import sys
 
 _log = []
-
-
-def parse_query(query_str):
-    tokens = query_str.strip().split()
-    if not tokens:
-        return "", []
-    return tokens[0], tokens[1:]
 
 
 def run():
@@ -24,9 +18,7 @@ def run():
         N, K = map(int, input_test_in().split())
         alphabet = input_test_in().split()
 
-        solution = ''
-        for i in range(N):
-            solution += random.choice(alphabet)
+        solution = "".join(random.choice(alphabet) for _ in range(N))
 
         print_prog(f"{N} {K}")
         print_prog(" ".join(alphabet))
@@ -35,45 +27,41 @@ def run():
 
         while True:
             if num_guesses > 100:
-                give_WA('Exceeded maximum number of allowed guesses.')
+                give_WA("Exceeded maximum number of allowed guesses.")
 
             guess = str(input_prog())
             num_guesses += 1
 
-            if len(guess) > N:
-                give_WA('Invalid guess: too long')
+            if len(guess) != N:
+                give_WA(f"Invalid guess length: expected {N}, got {len(guess)}")
 
             if guess == solution:
-                print_prog('CORRECT')
+                print_prog("CORRECT")
                 break
 
             feedback = []
             for i in range(N):
                 if guess[i] not in alphabet:
-                    give_WA('Invalid character: "{guess[i]}"')
+                    give_WA(f'Invalid character: "{guess[i]}"')
                 if guess[i] == solution[i]:
                     feedback.append(solution[i])
                 else:
-                    feedback.append('_')
+                    feedback.append("_")
 
-            print_prog(''.join(feedback))
+            print_prog("".join(feedback))
 
     give_AC()
 
 
 def main():
-    if len(sys.argv) != 3:
-        print("Usage: run.py input_file log_file", file=sys.stderr)
+    if len(sys.argv) < 2:
+        print("Usage: run.py input_file", file=sys.stderr)
         sys.exit(2)
 
-    _, test_in_path, prog_out_path = sys.argv
-
-    with open(test_in_path, "r") as test_in:
-        with open(prog_out_path, "w") as prog_out:
-            global _test_in, _prog_out
-            _test_in = test_in
-            _prog_out = prog_out
-            run()
+    with open(sys.argv[1], "r") as test_in:
+        global _test_in
+        _test_in = test_in
+        run()
 
 
 def give_AC():
@@ -85,38 +73,26 @@ def give_AC():
     except EOFError:
         pass
 
-    _print_prog_out("AC")
-    _prog_out.flush()
-    sys.exit(0)
+    sys.exit(42)
 
 
 def give_WA(reason):
     log("End of log")
-    _print_prog_out("WA")
-    _print_prog_out(f"Reason: {reason}")
-    _print_prog_out("Interaction Log:")
-
+    print(f"WA: {reason}", file=sys.stderr)
     for line in _log:
-        _print_prog_out(line)
-
-    _prog_out.flush()
-    sys.exit(1)
+        print(line, file=sys.stderr)
+    sys.exit(43)
 
 
 def give_IE(reason):
     print(f"Interactor error: {reason}", file=sys.stderr)
-    _print_prog_out("IE")
-    _print_prog_out(f"Reason: {reason}")
-    _prog_out.flush()
     sys.exit(2)
 
 
 def input_test_in():
     line = _test_in.readline()
-
     if line == "":
         give_IE("Unexpected end of test input")
-
     return line.strip()
 
 
@@ -138,10 +114,6 @@ def print_prog(*args, **kwargs):
         _log_without_tabs(output.getvalue())
     except BrokenPipeError:
         give_WA("Solution terminated before receiving judge input")
-
-
-def _print_prog_out(*args, **kwargs):
-    print(*args, **kwargs, file=_prog_out)
 
 
 def log(message):
