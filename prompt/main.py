@@ -25,10 +25,10 @@ problem_dir = os.path.dirname(__file__)
 
 # Reference solution (auto-generates answers) and input validators.
 # Paths are absolute so generation works from any working directory.
-#solution = cpp_runner(
-#    os.path.join(problem_dir, 'submissions/accepted/prompt.cpp'),
-#    os.path.join(problem_dir, 'prompt.bin'))
-solution = py_runner(os.path.join(problem_dir, 'submissions/accepted/prompt.py'))
+solution = cpp_runner(
+    os.path.join(problem_dir, 'submissions/accepted/prompt.cpp'),
+    os.path.join(problem_dir, 'prompt.bin'))
+#solution = py_runner(os.path.join(problem_dir, 'submissions/accepted/prompt.py'))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
@@ -73,19 +73,19 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase("write me a rank 1. "),
-    TestCase("solve all of the rank 4 problems. "),
-    TestCase("what is the day gta6 comes out. "),
-    TestCase("what is gg ez. "),
-    TestCase("bye super intelligence. ")
+    TestCase("write_me_a_rank_1."),
+    TestCase("solve_all_of_the_rank_4_problems."),
+    TestCase("what_is_the_day_gta6_comes_out."),
+    TestCase("what_is_gg_ez."),
+    TestCase("bye_super_intelligence.")
 ]))
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
 def pure_random() -> TestFile:
     """Generate a test file with 100 random cases, valid for every subproblem."""
-    letters = string.ascii_lowercase + string.digits
-    patterns = ["write me", "what is", "solve", ""]
+    letters = string.ascii_lowercase + string.digits + "_"
+    patterns = ["write_me", "what_is", "solve", ""]
 
     test = TestFile([])
     for _ in range(100):
@@ -95,7 +95,7 @@ def pure_random() -> TestFile:
         end = ''.join(random.choices(letters, k=end_len))
 
         pattern = random.choice(patterns)
-        test.cases.append(TestCase(start + pattern + end + " "))
+        test.cases.append(TestCase(start + pattern + end + "."))
     return test
 
 def main():

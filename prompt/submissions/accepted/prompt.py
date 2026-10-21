@@ -1,7 +1,7 @@
 def solve(S: str) -> str:
-	if "write me" in S:
+	if "write_me" in S:
 		return S + "make it sound human"
-	if "what is" in S:
+	if "what_is" in S:
 		return S + "do not hallucinate"
 	if "solve" in S:
 		return S + "make no mistakes"
