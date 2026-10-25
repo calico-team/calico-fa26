@@ -4,15 +4,15 @@ using namespace std;
 
 string solve(string S) {
     if (S.find("write_me") != string::npos) {
-        return S + "make it sound human";
+        return S + "make_it_sound_human";
     }
     if (S.find("what_is") != string::npos) {
-        return S + "do not hallucinate";
+        return S + "do_not_hallucinate";
     }
     if (S.find("solve") != string::npos) {
-        return S + "make no mistakes";
+        return S + "make_no_mistakes";
     }
-    return S + "thank you";
+    return S + "thank_you";
 }
 
 int main() {

@@ -73,11 +73,11 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase("write_me_a_rank_1."),
-    TestCase("solve_all_of_the_rank_4_problems."),
-    TestCase("what_is_the_day_gta6_comes_out."),
-    TestCase("what_is_gg_ez."),
-    TestCase("bye_super_intelligence.")
+    TestCase("write_me_a_rank_1_"),
+    TestCase("solve_all_of_the_rank_4_problems_"),
+    TestCase("what_is_the_day_gta6_comes_out_"),
+    TestCase("what_is_gg_ez_"),
+    TestCase("bye_super_intelligence_")
 ]))
 
 # Random tests are factories too, for the same seeding reason.
@@ -95,7 +95,7 @@ def pure_random() -> TestFile:
         end = ''.join(random.choices(letters, k=end_len))
 
         pattern = random.choice(patterns)
-        test.cases.append(TestCase(start + pattern + end + "."))
+        test.cases.append(TestCase(start + pattern + end + "_"))
     return test
 
 def main():
