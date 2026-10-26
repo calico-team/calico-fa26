@@ -2,6 +2,13 @@
 #include <vector>
 using namespace std;
 
+/**
+ * Return the maximum possible value of X, Big Ben's matcha enjoyment.
+ *
+ * N: the days in Big Ben's life
+ * L: the lower bound of enjoyment from each store
+ * R: the upper bound of enjoyment from each store
+ */ 
 int solve(int N, vector<int> L, vector<int> R) {
 	// YOUR CODE HERE
 	return -1;
