@@ -1,5 +1,6 @@
 def solve(N, L, R):
-    return 0 
+    # YOUR CODE HERE
+    return -1
 
 def main():
     T = int(input())
