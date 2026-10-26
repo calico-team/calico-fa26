@@ -1,17 +1,9 @@
-def solve(N: int, L: list[int], R: list[int]) -> int:
-    """
-    Return the sum of A and B.
-    
-    A: a non-negative integer
-    B: another non-negative integer
-    """
+def solve(N: int, L: list[int], R: list[int]):
     assert N <= 200000
     assert len(L) == N 
     assert len(R) == N 
     for i in range(N):
         assert 0 <= L[i] <= R[i] < (1 << 30)
-    return 0
-
 
 def main():
     T = int(input())
