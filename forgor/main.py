@@ -32,14 +32,13 @@ validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'
 # ``write_test_out``. ``seed`` is handled by the library: it calls
 # ``random.seed`` before each test, so you can't forget to seed.
 p = Problem(
-    'add_test_fa25',
+    'forgor',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=1),
-        Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
+        Subproblem('main', rank=3),
     ],
     solution=solution,
-    seed='add_seed_600')
+    seed='did i really just forget that melody')
 
 class TestCase(NamedTuple):
     N: int

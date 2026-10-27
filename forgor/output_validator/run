@@ -17,6 +17,7 @@ judge_msg = os.path.join(feedback_dir, "judgemessage.txt")
 judge_err = os.path.join(feedback_dir, "judgeerror.txt")
 
 team_output = sys.stdin.read()
+team_output_split = team_output.strip().splitlines()
 
 if not os.path.exists(marker_file): # Phase 1
 	# WA if empty
@@ -34,23 +35,23 @@ if not os.path.exists(marker_file): # Phase 1
 			f.write(f"Malformed .ans file: missing delimiter {CASE_DELIM}.\n")
 		sys.exit(1)
 
-	cases = testans_raw.split(CASE_DELIM)
+	cases = testans_raw.split(CASE_DELIM) 
+
+	phase2_in = [cases[0]]
 	cases.pop(0)
 
-	team_output_split = team_output.splitlines()
 	if len(cases) != len(team_output_split):
 		with open(judge_err, "w") as f:
 			f.write(f"Number of lines in output does not match expected number of lines: expected {len(cases)}, got {len(team_output_split)}")
 		sys.exit(1)
 
-	phase2_in = [len(cases)]
-	for case, idx in enumerate(cases):
-		if OUTPUT_DELIM not in testans_raw:
+	for idx, case in enumerate(cases):
+		if OUTPUT_DELIM not in case:
 			with open(judge_err, "w") as f:
 				f.write(f"Malformed .ans file: missing delimiter {OUTPUT_DELIM}.\n")
 			sys.exit(1)
 		else:
-			static_in_2, _ = case.split(OUTPUT_DELIM)
+			static_in_2, _ = case.split(OUTPUT_DELIM, 1)
 			phase2_in.append(
 				f"{static_in_2.strip()}\n{team_output_split[idx].strip()}\n"
 			)
@@ -60,19 +61,28 @@ if not os.path.exists(marker_file): # Phase 1
 		f.write("\n".join(phase2_in))
 
 	with open(marker_file, "w") as f:
-		f.write(1)
+		f.write("Finished Phase 1")
 	
-	sys.exit(42)
+	sys.exit(EXIT_AC)
 else: # Phase 2
 	with open(testans_path, "r") as f:
-		_, expected_output = f.read().split(DELIMITER, 1)
-	
-	actual_tokens = team_output.strip().split()
-	expected_tokens = expected_output.strip().split()
+		cases = f.read().split(CASE_DELIM)
 
-	if actual_tokens != expected_tokens:
+	cases.pop(0)
+	if len(team_output_split) != len(cases):
 		with open(judge_msg, "w") as f:
-			f.write("Phase 2 failure: output does not match expected output.\n")
-		sys.exit(43)
+			f.write("Phase 2 failure: line count mismatch.\n")
+		sys.exit(EXIT_WA)
+	
+	for i in range(len(cases)):
+		_, expected_output = cases[i].split(OUTPUT_DELIM, 1)
+	
+		actual_tokens = team_output_split[i].strip().split()
+		expected_tokens = expected_output.strip().split()
 
-	sys.exit(42)
+		if actual_tokens != expected_tokens:
+			with open(judge_msg, "w") as f:
+				f.write("Phase 2 failure: output does not match expected output.\n")
+			sys.exit(EXIT_WA)
+
+	sys.exit(EXIT_AC)

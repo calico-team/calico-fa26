@@ -8,13 +8,9 @@ int main() {
         int N; cin >> N;
         if (phase == 1) {
             vector<int> P(N);
+            vector<int> C(N + 2, 0);
             for (int i = 0; i < N; i++) {
                 cin >> P[i];
-            }
-
-            // vertex i has C[i] children
-            unordered_map<int, int> C;
-            for (int i = 0; i < N; i++) {
                 C[P[i]]++;
             }
 
@@ -31,25 +27,24 @@ int main() {
                 cin >> A[i];
             }
 
-            vector<int> P(N);
-            unordered_map<int, int> expC;
+            vector<int> P(N, -1);
+            vector<int> expC(N + 2, -1);
             int idx = -1; // index with missing value
             for (int i = 0; i < N; i++) {
                 if (A[i] != -1) {
-                    int parent = A[i] & ((1 << 10) - 1); // take bottom 10 bits
-                    int numChildren = (A[i] ^ parent) >> 10; // take remaining bits
+                    int parent = (int)(A[i] & ((1 << 10) - 1)); // take bottom 10 bits
+                    int numChildren = (int)((A[i] ^ parent) >> 10); // take remaining bits
                     P[i] = parent;
                     expC[i + 1] = numChildren; // convert to 1 indexing, expect vertex i+1 to have numChildren children 
                 }
                 else {
-                    expC[i + 1] = -1; // the value at this index is missing, so we don't have an expected number of children
                     idx = i;
                 }
             }
 
 
             // count actual number of children for each vertex
-            unordered_map<int, int> C;
+            vector<int> C(N + 2, 0);
             for (int i = 0; i < N; i++) {
                 if (P[i] != -1) {
                     C[P[i]]++;
