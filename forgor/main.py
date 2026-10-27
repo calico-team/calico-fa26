@@ -24,9 +24,7 @@ problem_dir = os.path.dirname(__file__)
 
 # Reference solution (auto-generates answers) and input validators.
 # Paths are absolute so generation works from any working directory.
-solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
+solution = py_runner(os.path.join(problem_dir, 'scripts/generate_output.py'))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
@@ -44,8 +42,8 @@ p = Problem(
     seed='add_seed_600')
 
 class TestCase(NamedTuple):
-    X: int
-    Y: int
+    N: int
+    P: list[int]
 
 @p.pre_gen_fn
 def pre_gen_fn():
@@ -59,50 +57,48 @@ class TestFile(TestFileBase):
 
     @override
     def write_test_in(self) -> str:
-        """Return the full input: the case count, then one ``X Y`` per case."""
-        lines = [str(len(self.cases))]
+        lines = [str(len(self.cases)) + " 1"]
         for case in self.cases:
-            lines.append(f'{case.X} {case.Y}')
+            lines.append(f'{case.N}')
+            lines.append(' '.join(map(str, case.P)))
         return '\n'.join(lines) + '\n'
 
     @override
     def validate_test_in(self, infile: str) -> None:
         """Run the validators against the input written at ``infile``."""
-        # main has tighter constraints (A, B <= 100).
-        if 'main' in self.subproblems:
-            validator_main.exec_file(infile)
-        validator.exec_file(infile)
+        validator_main.exec_file(infile)
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(4, 7),
-    TestCase(1, 23),
-    TestCase(9, 8),
-    TestCase(1, 1),
+    TestCase(3, [2, 1, 2])
 ]))
 
-# Hidden tests are secret (not shown to contestants).
+# Iterative DFS-like random tree generation
+def generate_tree(N):
+    available_nodes = list(range(1, N + 1))
+    parent = [-1] * N
 
-# A hard-coded test is just an explicit list of cases.
-p.add_hidden_test(TestFile([
-    TestCase(1, 1),
-    TestCase(100, 100),
-    TestCase(1, 100),
-]), 'edges')
+    root = random.choice(available_nodes)
+    parent[root - 1] = root
+    available_nodes.remove(root)
 
-# Anything built from a loop or ``random`` should be a factory, not an
-# instance: the factory runs after the library has seeded ``random``.
-def iota() -> TestFile:
-    """Generate 80 cases: X counts up 1..80, Y counts down 80..1."""
-    return TestFile([TestCase(i + 1, 80 - i) for i in range(80)])
+    path = [root]
+    while available_nodes and path:
+        num_children = random.randint(0, max(1, len(available_nodes) // 8)) 
+        if num_children == 0:
+            path.pop()
+            continue
 
-p.add_hidden_test(iota, 'iota')
+        nodes = []
+        for i in range(num_children):
+            node = random.choice(available_nodes)
+            nodes.append(node)
+            available_nodes.remove(node)
+            parent[node - 1] = path[-1]
 
-def iota_bonus() -> TestFile:
-    """Generate 100 bonus-sized cases: X up 1..100, Y down 10000..9901."""
-    return TestFile([TestCase(i + 1, 10000 - i) for i in range(100)])
+        path.extend(nodes)
 
-p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
+    return [] if available_nodes else parent
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
@@ -110,14 +106,12 @@ def pure_random() -> TestFile:
     """Generate a test file with 10 random cases, valid for every subproblem."""
     test = TestFile([])
     for _ in range(10):
-        test.cases.append(TestCase(random.randint(1, 100), random.randint(1, 100)))
+        N = random.randint(2, 1023)
+        tree = []
+        while not tree:
+            tree = generate_tree(N)
+        test.cases.append(TestCase(N, tree))
     return test
-
-@p.hidden_test_generator(test_count=4, subproblems=['bonus'])
-def pure_random2() -> TestFile:
-    """Generate a test file with 100 random bonus-sized cases."""
-    cases = (TestCase(random.randint(70, int(1e12)), random.randint(70, int(1e12))) for _ in range(100))
-    return TestFile(cases)
 
 def main():
     # Run cli (try `python main.py --help`)
