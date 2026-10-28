@@ -1,11 +1,10 @@
-def solve(N: int, A: list[int], B: list[int]):
+def solve(N: int, A: list[int], V: list[int]):
     assert N <= 200000
     assert len(A) == N
-    assert len(B) == N
+    assert len(V) == N
     for i in range(N):
-        assert 0 <= A[i] < (1 << 30)
-        assert 1 <= B[i] <= N
-
+        assert 1 <= A[i] <= N
+        assert 0 <= V[i] < (1 << 30)
 
 def main():
     T = int(input())
@@ -15,8 +14,8 @@ def main():
         N = int(input())
         smN += N
         A = list(map(int, input().split()))
-        B = list(map(int, input().split()))
-        solve(N, A, B)
+        V = list(map(int, input().split()))
+        solve(N, A, V)
     assert smN <= 200000
 
 if __name__ == '__main__':
