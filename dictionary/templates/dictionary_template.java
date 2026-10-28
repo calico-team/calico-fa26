@@ -13,7 +13,7 @@ class Solution {
      */
     static int[] solve(int N, int[] A, int[] V) {
         // YOUR CODE HERE
-        return new int[N];
+        return new int[0];
     }
 
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
