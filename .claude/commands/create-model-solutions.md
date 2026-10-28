@@ -64,7 +64,14 @@ For C++: `CPP_CC="g++ -std=c++17" ./check -t 1 submissions/accepted/new_sol.cpp 
 
 If the naive solution is too slow for larger test sets, verify on the small set only, then bootstrap (see threshold-tuning skill).
 
-TODO add info about run_all_tests.sh here
+## Batch testing with run_all_tests.sh
+
+The reference `run_all_tests.sh` lives in the problem root (a working version is at `example/run_all_tests.sh` for reference). It tests multiple solutions against multiple test sets in a single invocation:
+
+- `SOLS` array: all solutions (Python first, then Java, then C++)
+- `SETS` array: entries of the form `"setname:glob_pattern"` — comment/uncomment to scope the run
+- Per-language time limits: `TL_PY=4`, `TL_JAVA=2`, `TL_CPP=1`
+- Always use the `-f` (fail-fast) flag on the check invocation, and use the `PY_CMD=python3` / `CPP_CC="g++ -std=c++17"` prefixes
 
 ## Multi-language porting
 
