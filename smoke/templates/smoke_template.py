@@ -1,4 +1,11 @@
 def solve(N, R, A):
+	"""
+    Output whether all of the requests can be fulfilled.
+    
+    N: Number of smoke requests
+    R: Number of seconds needed for a smoke charge to recharge
+    A: List of timestamps where smokes are requested
+	"""
 	return ""
 
 def main():

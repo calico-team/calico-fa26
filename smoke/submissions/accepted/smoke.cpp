@@ -1,39 +1,51 @@
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
-string solve() {
-    int n, r;
-    cin>>n>>r;
-    vector<int> times(n+1);
-    times[0] = 0;
-
-    for(int i = 0; i<n; ++i){
-        cin>>times[i+1];
-    }
-    
-    int wait = 2*r;
-    
-    for(int i = 1; i<=n; ++i){
-        wait += times[i]-times[i-1];
-        wait = min(2*r, wait);
-        
-        if(wait >= r){
-            wait -= r;
-        }else{
-            return "NO";
-        }
-    }
-
-    return "YES";
+/**
+ * Output whether all of the requests can be fulfilled.
+ *
+ * N: Number of smoke requests
+ * R: Number of seconds needed for a smoke charge to recharge
+ * A: List of timestamps where smokes are requested
+ */
+string solve(int N, int R, vector<int> A) {
+	int currCharges = 2;
+	int cooldown = R;
+	int idx = 0;
+	for (int t = 0; t <= A[N - 1]; t++) {
+		if (currCharges == 2) {
+			cooldown = R;
+		}
+		else {
+			cooldown--;
+			if (cooldown == 0) {
+				cooldown = R;
+				currCharges++;
+			}
+			if (A[idx] == t) {
+				if (currCharges == 0) {
+					return "NO";
+				}
+				else {
+					currCharges--;
+					idx++;
+				}
+			}
+		}
+	}
+	return "YES";
 }
 
 int main() {
-    int T;
-    cin >> T;
-    for (int i = 0; i < T; i++) {
-       
-        cout << solve() << '\n';
-    }
+	int T; cin >> T;
+	while (T--) {
+		int N, R; cin >> N >> R;
+		vector<int> A(N);
+		for (int i = 0; i < N; i++) {
+			cin >> A[i];
+		}
+
+		cout << solve(N, R, A) << "\n";
+	}
 }

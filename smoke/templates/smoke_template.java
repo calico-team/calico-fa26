@@ -2,6 +2,13 @@ import java.io.*;
 
 class Solution {
 
+    /*
+     * Output whether all of the requests can be fulfilled.
+     *
+     * N: Number of smoke requests
+     * R: Number of seconds needed for a smoke charge to recharge
+     * A: List of timestamps where smokes are requested
+     */
     static String solve(int N, int R, int[] A) {
         return "";
     }

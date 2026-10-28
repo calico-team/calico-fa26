@@ -1,26 +1,29 @@
 def solve(N, R, A):
-	recharging = []
-	for a in A:
-		while recharging and recharging[0] <= a:
-			recharging.pop(0)
+    charges = 2
+    cooldown = R
+    times = set(A)
 
-		if len(recharging) == 2:
-			return 'NO'
-		elif len(recharging) == 1:
-			recharging.append(recharging[0] + R)
-		else:
-			recharging.append(a + R)
+    for t in range(A[-1] + 1):
+        if charges == 2:
+            cooldown = R
+        else:
+            cooldown -= 1
+            if cooldown == 0:
+                cooldown = R
+                charges += 1
 
-	return 'YES'
+        if t in times:
+            if charges:
+                charges -= 1
+            else:
+                return "NO"
 
-def main():
-	T = int(input())
-	for _ in range(T):
-		temp = input().split()
-		N = int(temp[0])
-		R = int(temp[1])
-		A = list(map(int, input().split()))
-		print(solve(N, R, A))
+    return "YES"
 
-if __name__ == '__main__':
-	main()
+        
+
+T = int(input())
+for _ in range(T):
+    N, R = [int(i) for i in input().split()]
+    A = [int(i) for i in input().split()]
+    print(solve(N, R, A))
