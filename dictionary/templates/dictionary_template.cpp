@@ -4,13 +4,13 @@ using namespace std;
 
 /**
  * Return an array of N integers, the i-th of which
- * represents Big Ben's maximum happiness if he 
+ * represents Big Ben's maximum happiness if he
  * starts by trying to define word i.
  *
  * N: the number of words in the dictionary
  * A: the first word in the definition of word i
  * V: the value associated with the happiness of each word
- */ 
+ */
 vector<int> solve(int N, vector<int> A, vector<int> V) {
 	// YOUR CODE HERE
 	return {};
