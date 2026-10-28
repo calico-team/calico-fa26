@@ -12,6 +12,7 @@ class Solution {
      * V: the value associated with the happiness of each word
      */
     static int[] solve(int N, int[] A, int[] V) {
+        // YOUR CODE HERE
         return new int[N];
     }
 
