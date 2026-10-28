@@ -30,6 +30,7 @@ void solve(){
     };
     for (int i = 0; i < n; i++){
         if (in[i]){
+            dfs(i);
             pq.push({heights[i], i});
         }
     }

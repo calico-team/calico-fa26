@@ -24,9 +24,10 @@ problem_dir = os.path.dirname(__file__)
 
 # Reference solution (auto-generates answers) and input validators.
 # Paths are absolute so generation works from any working directory.
-solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
+# solution = cpp_runner(
+    # os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
+    # os.path.join(problem_dir, 'sol.bin'))
+solution = py_runner(os.path.join(problem_dir, "submissions/accepted/sol.py"))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 # validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
@@ -86,6 +87,9 @@ p.add_sample_test(TestFile([
 
 # A hard-coded test is just an explicit list of cases.
 p.add_hidden_test(TestFile([
+    TestCase(6, 2, 3, [3, 4, 0, 0, 0, 0]),
+    TestCase(6, 2, 3, [0, 0, 0, 0, 1, 2]),
+    TestCase(12, 6, 2, [0, 1, 2, 3, 4, 5, 0, 7, 7, 0, 10, 10]),
 ]), 'edges')
 
 # Random tests are factories too, for the same seeding reason.
