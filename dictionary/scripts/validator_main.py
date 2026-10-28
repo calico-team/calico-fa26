@@ -17,7 +17,7 @@ def main():
         A = list(map(int, input().split()))
         B = list(map(int, input().split()))
         solve(N, A, B)
-    return smN <= 200000
+    assert smN <= 200000
 
 if __name__ == '__main__':
     main()

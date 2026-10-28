@@ -13,7 +13,7 @@ using namespace std;
  */ 
 vector<int> solve(int N, vector<int> A, vector<int> B) {
 	// YOUR CODE HERE
-	return A;
+	return {};
 }
 
 int main() {
