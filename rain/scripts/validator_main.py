@@ -1,21 +1,30 @@
-def solve(A: int, B: int) -> int:
+def solve(N: int, K: int, drones: list[tuple[int, int, int, str]]) -> int:
     """
-    Return the sum of A and B.
-    
-    A: a non-negative integer
-    B: another non-negative integer
+    The drone represents (X, Y, Z, D).
     """
-    assert A <= 100
-    assert B <= 100
-    return 0
+    assert 1 <= N <= 10**5
+    assert 1 <= K <= 10**9
+    assert len(drones) == N
 
+    for X, Y, Z, D in drones:
+        assert 0 <= X <= 10**9
+        assert 0 <= Y <= 10**9
+        assert 0 <= Z <= 10**9
+        assert D in ('E', 'N')
+
+    return 0
 
 def main():
     T = int(input())
-    assert T <= 100
+    assert 1 <= T <= 100
     for _ in range(T):
-        temp = input().split()
-        A, B = int(temp[0]), int(temp[1])
+        N, K = map(int, input().split())
+        drones = []
+        for _ in range(N):
+            X, Y, Z, D = input().split()
+            drones.append((int(X), int(Y), int(Z), D))
+        solve(N, K, drones)
+
 
 if __name__ == '__main__':
     main()
