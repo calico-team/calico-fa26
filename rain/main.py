@@ -104,32 +104,93 @@ p.add_hidden_test(TestFile([
     ])
 ]), 'hard_edges')
 # Random tests are factories too, for the same seeding reason.
-@p.hidden_test_generator(test_count=4)
-def pure_random() -> TestFile:
-    """Generate a test file with 100 random cases."""
+@p.hidden_test_generator(test_count=5)
+def randomSmall() -> TestFile:
     test = TestFile([])
 
     for _ in range(100):
+        N = random.randint(90, 100)
+        K = random.randint(1, 10**9)
+        drones = []
+        positions = set()
+
+        for _ in range(N):
+            while True:
+                X = random.randint(1, 50)
+                Y = random.randint(1, 50)
+                D = random.choice(['E', 'N'])
+                if D == 'N':
+                    Z = random.randrange(2, 11, 2)
+                else:
+                    Z = random.randrange(1, 11, 2)
+
+                if (X, Y) not in positions:
+                    positions.add((X, Y, Z))
+                    break
+
+            drones.append((X, Y, Z, D))
+
+        test.cases.append(TestCase(N, K, drones))
+
+    return test
+
+
+@p.hidden_test_generator(test_count=5)
+def randomMedium() -> TestFile:
+    test = TestFile([])
+
+    for _ in range(10):
+        N = random.randint(100, 1000)
+        K = random.randint(1, 10**9)
+        drones = []
+        positions = set()
+
+        for _ in range(N):
+            while True:
+                X = random.randint(1, 100)
+                Y = random.randint(1, 100)
+                D = random.choice(['E', 'N'])
+                if D == 'N':
+                    Z = random.randrange(2, 101, 2)
+                else:
+                    Z = random.randrange(1, 101, 2)
+
+                if (X, Y) not in positions:
+                    positions.add((X, Y, Z))
+                    break
+
+            drones.append((X, Y, Z, D))
+
+        test.cases.append(TestCase(N, K, drones))
+
+    return test
+
+
+@p.hidden_test_generator(test_count=2)
+def randomBig() -> TestFile:
+    test = TestFile([])
+
+    for _ in range(10):
         N = random.randint(1, 10**5)
         K = random.randint(1, 10**9)
         drones = []
         positions = set()
-        directions = {}
 
         for _ in range(N):
             while True:
-                X = random.randint(1, 10**9)
-                Y = random.randint(1, 10**9)
-                Z = random.randint(1, 100)
+                X = random.randint(1, 10**5)
+                Y = random.randint(1, 10**5)
+                D = random.choice(['E', 'N'])
+                if D == 'N':
+                    Z = random.randrange(2, 101, 2)
+                else:
+                    Z = random.randrange(1, 101, 2)
 
-                if (X, Y, Z) not in positions:
+                if (X, Y) not in positions:
                     positions.add((X, Y, Z))
                     break
 
-            if Z not in directions:
-                directions[Z] = random.choice(['N', 'E'])
-
-            drones.append((X, Y, Z, directions[Z]))
+            drones.append((X, Y, Z, D))
 
         test.cases.append(TestCase(N, K, drones))
 

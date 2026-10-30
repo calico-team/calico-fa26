@@ -7,9 +7,9 @@ def solve(N: int, K: int, drones: list[tuple[int, int, int, str]]) -> int:
     assert len(drones) == N
 
     for X, Y, Z, D in drones:
-        assert 0 <= X <= 10**9
-        assert 0 <= Y <= 10**9
-        assert 0 <= Z <= 10**9
+        assert 0 <= X <= 10**5
+        assert 0 <= Y <= 10**5
+        assert 0 <= Z <= 100
         assert D in ('E', 'N')
 
     return 0
