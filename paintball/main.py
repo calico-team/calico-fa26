@@ -34,14 +34,14 @@ validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'
 # ``write_test_out``. ``seed`` is handled by the library: it calls
 # ``random.seed`` before each test, so you can't forget to seed.
 p = Problem(
-    'paint',
+    'paintball',
     problem_dir,
     test_sets=[
         Subproblem('main', rank=1),
         Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
     ],
     solution=solution,
-    seed='paint_seed_6782804590')
+    seed='paintball_seed_6782804590')
 
 class TestCase(NamedTuple):
     X: int
