@@ -9,8 +9,8 @@ from calico_lib import Problem, Subproblem, TestFileBase, cpp_runner, py_runner,
 
 problem_dir = os.path.dirname(__file__)
 solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'),
+    os.path.join(problem_dir, 'submissions/accepted/paintball_implicit_dsu_sol.cpp'),
+    os.path.join(problem_dir, 'paintball_implicit_dsu_sol.bin'),
 )
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
