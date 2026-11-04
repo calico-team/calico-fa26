@@ -27,8 +27,8 @@ problem_dir = os.path.dirname(__file__)
 # Built by hand instead of with ``cpp_runner``, which prepends './' to any path
 # not starting with '/' and so breaks on Windows absolute paths (C:\...).
 solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/sol.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
+    os.path.join(problem_dir, 'submissions/accepted/sol_bonus.cpp'),
+    os.path.join(problem_dir, 'sol_bonus.bin'))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
@@ -40,7 +40,7 @@ p = Problem(
     problem_dir,
     test_sets=[
         Subproblem('main', rank=2),
-        # Subproblem('bonus', rank=2, time_limit=4, mem_limit=1_000_000_000),
+        Subproblem('bonus', rank=2)
     ],
     solution=solution,
     seed='mario')
@@ -48,7 +48,10 @@ p = Problem(
 class TestCase(NamedTuple):
     N: int
     M: int 
+    Q: int
     G: list[str]
+    start: list[tuple[int, int]]
+    end: list[tuple[int, int]]
 
 @p.pre_gen_fn
 def pre_gen_fn():
@@ -65,8 +68,10 @@ class TestFile(TestFileBase):
         """Return the full input: the case count, then one ``X Y`` per case."""
         lines = [str(len(self.cases))]
         for case in self.cases:
-            lines.append(f'{case.N} {case.M}')
+            lines.append(f'{case.N} {case.M} {case.Q}')
             lines += case.G
+            for i in range(case.Q):
+                lines.append(f'{case.start[i][0]} {case.start[i][1]} {case.end[i][0]} {case.end[i][1]}')
         return '\n'.join(lines) + '\n'
 
     @override
@@ -79,10 +84,15 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(2,4,[".R.B", ".RRB"]),
-    TestCase(2,4,[".RB.", ".RB."]),
-    TestCase(9,9,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"])
+    TestCase(2,4,2,[".R.B", ".RRB"],[(0,0),(1,0)],[(1,3),(1,3)]),
+    TestCase(2,4,2,[".RB.", ".RB."],[(0,0),(0,3)],[(1,3),(1,3)]),
+    TestCase(9,9,3,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"],[(8,1),(0,4),(8,7)],[(8,8),(8,8),(8,8)])
 ]))
+
+p.add_sample_test(TestFile([
+    TestCase(2,4,2,[".RB.", ".RB."],[(1,0),(1,3)],[(1,2),(0,3)]),
+    TestCase(9,9,3,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"],[(0,8),(8,1),(8,7)],[(4,5),(2,8),(0,0)])
+]), subproblems=["bonus"])
 
 # Hidden tests are secret (not shown to contestants).
 
@@ -109,21 +119,62 @@ p.add_sample_test(TestFile([
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
-def pure_random() -> TestFile:
+def pure_random_main() -> TestFile:
     """Generate a test file with 100 random cases, valid for every subproblem."""
     test = TestFile([])
     for _ in range(100):
-        N, M = random.randint(1, 200), random.randint(1, 200)
+        N, M, Q = random.randint(1, 200), random.randint(1, 200), random.randint(1, 1000)
         G = []
+        normal_tiles = []
         for i in range(N):
             row = ""
             for j in range(M):
-                if i == 0 and j == 0:
-                    row += random.choice(['B', '.'])
-                else:
-                    row += random.choice(['R', 'B', '.'])
+                cell = random.choice(['R', 'B', '.'])
+                row += cell
+                if cell == '.':
+                    normal_tiles.append((i, j))
             G.append(row)
-        test.cases.append(TestCase(N, M, G))
+        if len(normal_tiles) == 0:
+            row, col = random.randint(0, N-1), random.randint(0, M-1)
+            G[row][col] = '.'
+            normal_tiles.append((row, col))
+        
+        start = []
+        end = [(N-1, M-1) for _ in range(Q)]
+        for i in range(Q):
+            start.append(random.choice(normal_tiles))
+
+        test.cases.append(TestCase(N, M, Q, G, start, end))
+    return test
+
+@p.hidden_test_generator(test_count=4, subproblems=["bonus"])
+def pure_random_bonus() -> TestFile:
+    """Generate a test file with 100 random cases, valid for every subproblem."""
+    test = TestFile([])
+    for _ in range(100):
+        N, M, Q = random.randint(1, 200), random.randint(1, 200), random.randint(1, 1000)
+        G = []
+        normal_tiles = []
+        for i in range(N):
+            row = ""
+            for j in range(M):
+                cell = random.choice(['R', 'B', '.'])
+                row += cell
+                if cell == '.':
+                    normal_tiles.append((i, j))
+            G.append(row)
+        if len(normal_tiles) == 0:
+            row, col = random.randint(0, N-1), random.randint(0, M-1)
+            G[row][col] = '.'
+            normal_tiles.append((row, col))
+        
+        start = []
+        end = []
+        for i in range(Q):
+            start.append(random.choice(normal_tiles))
+            end.append((random.randint(0, N-1), random.randint(0, M-1)))
+
+        test.cases.append(TestCase(N, M, Q, G, start, end))
     return test
 
 # @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
