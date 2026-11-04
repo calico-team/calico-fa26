@@ -138,6 +138,25 @@ def long_tree() -> TestFile:
     test.cases.append(TestCase(N, A, V))
     return test
 
+@p.hidden_test_generator(test_count=4)
+def half_cycle_half_tree() -> TestFile:
+    test = TestFile([])
+    N = 200000
+    cyc = random.sample(range(1, N + 1), 100000)
+    oth = list(set(range(1, N + 1)) - set(cyc))
+    random.shuffle(oth)
+    A = [0] * N
+    V = []
+    for i in range(len(cyc)):
+        A[cyc[i] - 1] = cyc[(i + 1) % len(cyc)]
+    A[oth[0] - 1] = cyc[0]
+    for i in range(1, len(oth)):
+        A[oth[i] - 1] = oth[i - 1]
+    for i in range(N):
+        V.append(random.randint(0, (1 << 30) - 1))
+    test.cases.append(TestCase(N, A, V));
+    return test
+
 def main():
     # Run cli (try `python main.py --help`)
     run_cli(p)
