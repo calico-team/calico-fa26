@@ -86,6 +86,24 @@ p.add_sample_test(TestFile([
 # instance: the factory runs after the library has seeded ``random``.
 
 # Random tests are factories too, for the same seeding reason.
+@p.hidden_test_generator(test_count=1)
+def brute_force() -> TestFile:
+    test = TestFile([])
+    for one in range(16):
+        for two in range(16):
+            for three in range(16):
+                for four in range(16):
+                    L = [one // 4, two // 4, three // 4, four // 4]
+                    R = [one % 4, two % 4, three % 4, four % 4]
+                    bad = False
+                    for i in range(4):
+                        if L[i] > R[i]:
+                            bad = True
+                    if not bad:
+                        test.cases.append(TestCase(4, L, R))
+    return test
+
+
 @p.hidden_test_generator(test_count=4)
 def pure_random_2() -> TestFile:
     test = TestFile([])
