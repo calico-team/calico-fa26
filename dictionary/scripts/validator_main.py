@@ -1,5 +1,5 @@
 def solve(N: int, A: list[int], V: list[int]):
-    assert N <= 200000
+    assert 1 <= N <= 200000
     assert len(A) == N
     assert len(V) == N
     for i in range(N):
@@ -8,7 +8,7 @@ def solve(N: int, A: list[int], V: list[int]):
 
 def main():
     T = int(input())
-    assert T <= 100
+    assert 1 <= T <= 100
     smN = 0
     for _ in range(T):
         N = int(input())
