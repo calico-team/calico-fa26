@@ -30,14 +30,14 @@ void chv(int cur, int x, int v) {
 }
 
 int gt(int cur) {
-	int ans = 0;
+	int ansh = 0;
 	for (int b = 29; b >= 0; --b) {
 		int h = !!(xr & (1 << b));
 		if (cnt[ch[cur][h ^ 1]] > 0) {
-			ans ^= 1 << b; cur = ch[cur][h ^ 1];
+			ansh ^= 1 << b; cur = ch[cur][h ^ 1];
 		} else cur = ch[cur][h];
 	}
-	return ans;
+	return ansh;
 }
 
 void trav(int cur, int node, vector<int>& V, bool f = false) {
@@ -92,8 +92,8 @@ int main() {
 		vector<int> A(n), V(n);
 		for (int& i : A) cin >> i;
 		for (int& i : V) cin >> i;
-		vector<int> ans = solve(n, A, V);
-		for (int& i : ans) cout << i << ' ';
+		vector<int> ansf = solve(n, A, V);
+		for (int& i : ansf) cout << i << ' ';
 		cout << '\n';
 	}
 	return 0;
