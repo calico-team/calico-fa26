@@ -35,7 +35,7 @@ p = Problem(
     'dictionary',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=3),
+        Subproblem('main', rank=4),
     ],
     solution=solution,
     seed='dictionaryyyyy')
