@@ -88,11 +88,11 @@ int main() {
 	cin.tie(nullptr);
 	int T; cin >> T;
 	while (T--) {
-		int N; cin >> N;
-		vector<int> A(N), V(N);
+		int n; cin >> n;
+		vector<int> A(n), V(n);
 		for (int& i : A) cin >> i;
 		for (int& i : V) cin >> i;
-		vector<int> ans = solve(N, A, V);
+		vector<int> ans = solve(n, A, V);
 		for (int& i : ans) cout << i << ' ';
 		cout << '\n';
 	}
