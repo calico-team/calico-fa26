@@ -2,7 +2,7 @@
 
 # Example add problem.
 # Constraints:
-#   main: T <= 100, N <= 2e5, 0 <= Li <= Ri < 2^(30)
+#   main: T <= 1e5, N <= 2e5, 0 <= Li <= Ri < 2^(30)
 
 import os
 import random
@@ -87,8 +87,33 @@ p.add_sample_test(TestFile([
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=4)
-def pure_random_small() -> TestFile:
-    """"""
+def pure_random_2() -> TestFile:
+    test = TestFile([])
+    for _ in range(100):
+        N = 2
+        L = []
+        R = []
+        for i in range(N):
+            L.append(random.randint(0, (1 << 30) - 1))
+            R.append(random.randint(L[-1], (1 << 30) - 1))
+        test.cases.append(TestCase(N, L, R))
+    return test
+
+@p.hidden_test_generator(test_count=4)
+def pure_random_3() -> TestFile:
+    test = TestFile([])
+    for _ in range(66666):
+        N = 3
+        L = []
+        R = []
+        for i in range(N):
+            L.append(random.randint(0, (1 << 30) - 1))
+            R.append(random.randint(L[-1], (1 << 30) - 1))
+        test.cases.append(TestCase(N, L, R))
+    return test
+
+@p.hidden_test_generator(test_count=2)
+def pure_random_2000() -> TestFile:
     test = TestFile([])
     for _ in range(100):
         N = random.randint(1, 2000)
@@ -100,8 +125,8 @@ def pure_random_small() -> TestFile:
         test.cases.append(TestCase(N, L, R))
     return test
 
-@p.hidden_test_generator(test_count=4)
-def pure_random_big() -> TestFile:
+@p.hidden_test_generator(test_count=2)
+def pure_random_200000() -> TestFile:
     test = TestFile([])
     N = 200000
     L = []

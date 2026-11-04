@@ -7,7 +7,7 @@ def solve(N: int, L: list[int], R: list[int]):
 
 def main():
     T = int(input())
-    assert T <= 100
+    assert 1 <= T <= 100000
     smN = 0
     for _ in range(T):
         N = int(input())
@@ -15,7 +15,7 @@ def main():
         L = list(map(int, input().split()))
         R = list(map(int, input().split()))
         solve(N, L, R)
-    assert smN <= 200000
+    assert 1 <= smN <= 200000
 
 if __name__ == '__main__':
     main()
