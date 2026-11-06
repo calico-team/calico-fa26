@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+# Checks that all three contestant templates compile, run, and parse the
+# sample input correctly. Run from the smoke/ directory:
+#   ./scripts/check_templates
+#
+# Stub solve() returns "" so every case prints one empty line.
+# The params check injects an echo of N, R, A[0], A[-1] at the
+# "// YOUR CODE HERE" marker and checks the I/O plumbing parses correctly.
+
+if ! [[ -v PY_CMD ]]; then PY_CMD=python3; fi
+if ! [[ -v JAVA_CMD ]]; then JAVA_CMD=java; fi
+if ! [[ -v CPP_CC ]]; then CPP_CC=g++; fi
+if ! [[ -v JAVAC_CMD ]]; then JAVAC_CMD=javac; fi
+
+SAMPLE="data/sample/00_main.in"
+
+# Stub (return "") prints one empty line per case; $(...) strips trailing
+# newlines so an all-empty output compares as "". A crash/wrong output
+# still fails because stderr/extra lines land in the capture.
+STUB_LINES=4
+
+# Params echo injected: "N R A[0] A[-1]" then the stub's empty line, per case.
+PARAMS_EXPECTED="5 10 20 60
+
+7 100 1 7
+
+8 5 5 56
+
+9 30 20 250"
+
+pass() { echo "PASS: $1"; }
+fail() { echo "FAIL: $1"; echo "  expected: $(echo "$2" | tr '\n' '|')"; echo "  got:      $(echo "$3" | tr '\n' '|')"; }
+
+check() {  # check <name> <expected> <got>
+    if [[ "$2" == "$3" ]]; then
+        pass "$1"
+    else
+        fail "$1" "$2" "$3"
+    fi
+}
+
+check_stub_lines() {  # stub prints exactly STUB_LINES empty lines and exits 0
+    local name="$1" rc tmp_out
+    tmp_out=$(mktemp "${TMPDIR:-/tmp}/smoke_stub_XXXX.out")
+    eval "$2" < "$SAMPLE" > "$tmp_out" 2>&1; rc=$?
+    local got_lines
+    got_lines=$(wc -l < "$tmp_out")
+    if [[ $rc -eq 0 && $got_lines -eq $STUB_LINES && $(wc -c < "$tmp_out") -eq $STUB_LINES ]]; then
+        pass "$name (stub runs, $STUB_LINES empty lines)"
+    else
+        fail "$name (stub)" "exit 0, $STUB_LINES empty lines" "exit $rc, $got_lines lines, content: $(tr '\n' '|' < "$tmp_out")"
+    fi
+    rm -f "$tmp_out"
+}
+
+# --- Python ---
+echo "--- Python ---"
+
+check_stub_lines "smoke_template.py" "$PY_CMD templates/smoke_template.py"
+
+tmp_py=$(mktemp "${TMPDIR:-/tmp}/smoke_XXXX.py")
+sed 's|    # YOUR CODE HERE|    print(N, R, A[0], A[-1])\n    # YOUR CODE HERE|' \
+    templates/smoke_template.py > "$tmp_py"
+output=$($PY_CMD "$tmp_py" < "$SAMPLE" 2>&1)
+check "smoke_template.py (params)" "$PARAMS_EXPECTED" "$output"
+rm -f "$tmp_py"
+
+# --- C++ ---
+echo "--- C++ ---"
+
+if $CPP_CC -O2 templates/smoke_template.cpp -o scripts/smoke_template.bin 2>&1; then
+    check_stub_lines "smoke_template.cpp" "scripts/smoke_template.bin"
+    rm -f scripts/smoke_template.bin
+else
+    echo "FAIL: smoke_template.cpp (compilation error)"
+fi
+
+tmp_cpp=$(mktemp "${TMPDIR:-/tmp}/smoke_XXXX.cpp")
+sed 's|\t// YOUR CODE HERE|\tcout << N << " " << R << " " << A[0] << " " << A[N - 1] << endl;\n\t// YOUR CODE HERE|' \
+    templates/smoke_template.cpp > "$tmp_cpp"
+if $CPP_CC -O2 "$tmp_cpp" -o scripts/smoke_template.bin 2>&1; then
+    output=$(scripts/smoke_template.bin < "$SAMPLE" 2>&1)
+    check "smoke_template.cpp (params)" "$PARAMS_EXPECTED" "$output"
+    rm -f scripts/smoke_template.bin
+else
+    echo "FAIL: smoke_template.cpp (params injection compilation error)"
+fi
+rm -f "$tmp_cpp"
+
+# --- Java ---
+echo "--- Java ---"
+
+if $JAVAC_CMD -d scripts/ templates/smoke_template.java 2>&1; then
+    check_stub_lines "smoke_template.java" "$JAVA_CMD -cp scripts Solution"
+    rm -f scripts/Solution.class
+else
+    echo "FAIL: smoke_template.java (compilation error)"
+fi
+
+tmp_java=$(mktemp "${TMPDIR:-/tmp}/smoke_XXXX.java")
+sed 's|        // YOUR CODE HERE|        out.println(N + " " + R + " " + A[0] + " " + A[N - 1]);\n        // YOUR CODE HERE|' \
+    templates/smoke_template.java > "$tmp_java"
+if $JAVAC_CMD -d scripts/ "$tmp_java" 2>&1; then
+    output=$($JAVA_CMD -cp scripts Solution < "$SAMPLE" 2>&1)
+    check "smoke_template.java (params)" "$PARAMS_EXPECTED" "$output"
+    rm -f scripts/Solution.class
+else
+    echo "FAIL: smoke_template.java (params injection compilation error)"
+fi
+rm -f "$tmp_java"
