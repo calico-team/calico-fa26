@@ -118,12 +118,14 @@ p.add_sample_test(TestFile([
 # p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
 
 # Random tests are factories too, for the same seeding reason.
-@p.hidden_test_generator(test_count=4)
-def pure_random_main() -> TestFile:
-    """Generate a test file with 100 random cases, valid for every subproblem."""
+def random_cases(fixed_end: bool) -> TestFile:
     test = TestFile([])
-    for _ in range(100):
-        N, M, Q = random.randint(1, 200), random.randint(1, 200), random.randint(1, 1000)
+    total = 2 * 10**5
+    while len(test.cases) < 100 and total > 0:
+        N = random.randint(1, min(200, total))
+        M = random.randint(1, min(200, total // N))
+        Q = random.randint(1, 1000)
+        total -= N * M
         G = []
         normal_tiles = []
         for i in range(N):
@@ -136,46 +138,28 @@ def pure_random_main() -> TestFile:
             G.append(row)
         if len(normal_tiles) == 0:
             row, col = random.randint(0, N-1), random.randint(0, M-1)
-            G[row][col] = '.'
+            G[row] = G[row][:col] + '.' + G[row][col+1:]
             normal_tiles.append((row, col))
-        
-        start = []
-        end = [(N-1, M-1) for _ in range(Q)]
-        for i in range(Q):
-            start.append(random.choice(normal_tiles))
 
-        test.cases.append(TestCase(N, M, Q, G, start, end))
-    return test
-
-@p.hidden_test_generator(test_count=4, subproblems=["bonus"])
-def pure_random_bonus() -> TestFile:
-    """Generate a test file with 100 random cases, valid for every subproblem."""
-    test = TestFile([])
-    for _ in range(100):
-        N, M, Q = random.randint(1, 200), random.randint(1, 200), random.randint(1, 1000)
-        G = []
-        normal_tiles = []
-        for i in range(N):
-            row = ""
-            for j in range(M):
-                cell = random.choice(['R', 'B', '.'])
-                row += cell
-                if cell == '.':
-                    normal_tiles.append((i, j))
-            G.append(row)
-        if len(normal_tiles) == 0:
-            row, col = random.randint(0, N-1), random.randint(0, M-1)
-            G[row][col] = '.'
-            normal_tiles.append((row, col))
-        
         start = []
         end = []
         for i in range(Q):
             start.append(random.choice(normal_tiles))
-            end.append((random.randint(0, N-1), random.randint(0, M-1)))
+            if fixed_end:
+                end.append((N-1, M-1))
+            else:
+                end.append((random.randint(0, N-1), random.randint(0, M-1)))
 
         test.cases.append(TestCase(N, M, Q, G, start, end))
     return test
+
+@p.hidden_test_generator(test_count=4)
+def pure_random_main() -> TestFile:
+    return random_cases(True)
+
+@p.hidden_test_generator(test_count=4, subproblems=["bonus"])
+def pure_random_bonus() -> TestFile:
+    return random_cases(False)
 
 # @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
 # def pure_random2() -> TestFile:

@@ -1,5 +1,3 @@
-from collections import deque
-
 class DSU:
     def __init__(self, n: int):
         self.parent = list(range(n))

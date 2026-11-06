@@ -25,8 +25,11 @@ def solve(N: int, M: int, Q: int, G: list[str], start: list[tuple[int, int]], en
 def main():
     T = int(input())
     assert 1 <= T <= 100
+    total_cells = 0
     for _ in range(T):
         N, M, Q = map(int, input().split())
+        total_cells += N * M
+        assert total_cells <= 2 * 10**5
         G = []
         for _ in range(N):
             G.append(input())
