@@ -117,6 +117,24 @@ p.add_sample_test(TestFile([
 
 # p.add_hidden_test(iota_bonus, 'iota', subproblems=['bonus'])
 
+p.add_hidden_test(TestFile([
+    TestCase(1,1,1,["."],[(0,0)],[(0,0)]),
+    TestCase(1,5,2,[".RB.."],[(0,0),(0,3)],[(0,4),(0,4)]),
+    TestCase(4,1,1,[".","R","R","B"],[(0,0)],[(3,0)]),
+    TestCase(4,1,1,[".","B","B","B"],[(0,0)],[(3,0)]),
+    TestCase(2,2,1,[".B","BR"],[(0,0)],[(1,1)]),
+    TestCase(2,2,1,["..",".R"],[(0,0)],[(1,1)]),
+    TestCase(1,4,1,[".R.B"],[(0,0)],[(0,3)])
+]), 'edges')
+
+p.add_hidden_test(TestFile([
+    TestCase(3,3,3,["BRB","R.R","BRB"],[(1,1),(1,1),(1,1)],[(1,1),(0,1),(0,0)]),
+    TestCase(1,5,2,[".BBB."],[(0,0),(0,4)],[(0,4),(0,0)]),
+    TestCase(1,5,3,[".BRB."],[(0,0),(0,0),(0,4)],[(0,4),(0,1),(0,2)]),
+    TestCase(1,5,2,[".RRRB"],[(0,0),(0,0)],[(0,3),(0,4)]),
+    TestCase(3,3,2,["RRR","RBR","RR."],[(2,2),(2,2)],[(1,1),(0,0)])
+]), 'edges', subproblems=["bonus"])
+
 # Random tests are factories too, for the same seeding reason.
 def random_cases(fixed_end: bool) -> TestFile:
     test = TestFile([])
@@ -160,6 +178,35 @@ def pure_random_main() -> TestFile:
 @p.hidden_test_generator(test_count=4, subproblems=["bonus"])
 def pure_random_bonus() -> TestFile:
     return random_cases(False)
+
+def split_cases(fixed_end: bool) -> TestFile:
+    test = TestFile([])
+    for _ in range(5):
+        N, M, Q = 200, 200, 1000
+        wall = M // 2 - 1
+        G = []
+        for i in range(N):
+            G.append('.' * wall + 'RB' + '.' * (M - wall - 2))
+
+        start = []
+        end = []
+        for i in range(Q):
+            start.append((random.randint(0, N-1), random.randint(0, wall-1)))
+            if fixed_end:
+                end.append((N-1, M-1))
+            else:
+                end.append((random.randint(0, N-1), random.randint(wall+1, M-1)))
+
+        test.cases.append(TestCase(N, M, Q, G, start, end))
+    return test
+
+@p.hidden_test_generator(test_count=1)
+def split_main() -> TestFile:
+    return split_cases(True)
+
+@p.hidden_test_generator(test_count=1, subproblems=["bonus"])
+def split_bonus() -> TestFile:
+    return split_cases(False)
 
 # @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
 # def pure_random2() -> TestFile:
