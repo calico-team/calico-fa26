@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
 const int LOG = 30;
@@ -10,7 +11,16 @@ int merge(int a, int b) {
 	return ((a ^ b) | ((1 << (bit + 1)) - 1));
 }
 
-int solve(int n, vector<pair<int, int>> lr) {
+/**
+ * Return the maximum possible value of X, Big Ben's matcha enjoyment.
+ *
+ * N: the days in Big Ben's life
+ * L: the lower bound of enjoyment from each store
+ * R: the upper bound of enjoyment from each store
+ */ 
+int solve(int N, vector<int> L, vector<int> R) {
+	vector<pair<int, int>> lr;
+	for (int i = 0; i < N; ++i) lr.push_back({L[i], R[i]});
 	int ans = 0;
 	for (int i = LOG - 1; i >= 0; --i) {
 		vector<pair<int, int>> nlr;
@@ -54,13 +64,13 @@ int solve(int n, vector<pair<int, int>> lr) {
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int t; cin >> t;
-	while (t--) {
-		int n; cin >> n;
-		vector<pair<int, int>> lr(n);
-		for (int i = 0; i < n; ++i) cin >> lr[i].first;
-		for (int i = 0; i < n; ++i) cin >> lr[i].second;
-		cout << solve(n, lr) << '\n';
+	int T; cin >> T;
+	while (T--) {
+		int N; cin >> N;
+		vector<int> L(N), R(N);
+		for (int& i : L) cin >> i;
+		for (int& i : R) cin >> i;
+		cout << solve(N, L, R) << '\n';
 	}
 	return 0;
 }
