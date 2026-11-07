@@ -74,7 +74,8 @@ class TestFile(TestFileBase):
 p.add_sample_test(TestFile([
     TestCase(2, [1, 2], [1, 2]),
     TestCase(2, [2, 1], [3, 7]),
-    TestCase(2, [1, 1], [3, 7])
+    TestCase(2, [1, 1], [3, 7]),
+    TestCase(7, [6, 8, 7, 3, 6, 7, 8, 4], [6, 8, 7, 3, 6, 7, 8, 4])
 ]))
 
 # Hidden tests are secret (not shown to contestants).
