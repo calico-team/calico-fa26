@@ -4,6 +4,9 @@
 using namespace std;
 
 string solve() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int n, r;
     cin >> n >> r;
     vector<int> times(n + 1);
