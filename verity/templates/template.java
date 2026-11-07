@@ -1,6 +1,14 @@
 import java.io.*;
 import java.util.*;
 
+/*
+- Print a string that could be the answer string
+-
+- N: Length of the string
+- K: Number of different -ities
+- A: List containing the different -ities
+*/
+
 class Solution {
     static BufferedReader in = new BufferedReader(
         new InputStreamReader(System.in)

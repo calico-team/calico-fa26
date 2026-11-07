@@ -2,6 +2,13 @@
 import sys
 from functools import partial
 
+"""
+* Print a string that could be the answer string
+*
+* N: Length of the string
+* K: Number of different -ities
+* A: List containing the different -ities
+"""
 print = partial(print, flush=True)
 
 def solve(N: int, K: int, A: list[str]) -> None:

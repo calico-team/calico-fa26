@@ -1,6 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/*
+* Print a string that could be the answer string
+*
+* N: Length of the string
+* K: Number of different -ities
+* A: List containing the different -ities
+*/
+
 void solve(int N, int K, vector<char>& A) {
     // YOUR CODE HERE
 }
