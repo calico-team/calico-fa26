@@ -6,7 +6,7 @@ def solve(N, R, A):
 		a = A[i]
 		if i != 0:
 			assert a > A[i-1]
-		assert a <= 10000, f'a={a}'
+		assert a <= int(1e5), f'a={a}'
 	
 def main():
 	T = int(input())
