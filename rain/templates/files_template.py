@@ -1,3 +1,10 @@
+"""
+* N: Number of drones
+* K: Number of nights
+* drone: a list in this order [x_coordinate, y_coordinate, z_coordinate, direction] for each drone
+"""
+
+
 def solve(N: int, K: int, drones: list):
     answer = 0
     return answer
