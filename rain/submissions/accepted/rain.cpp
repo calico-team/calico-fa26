@@ -52,7 +52,7 @@ int main() {
             bool east = get<2>(drone.s);
             if(east){
 
-                if(northDrones.contains(x+y)){
+                if(northDrones.count(x+y)){
                     ordered_set<int> &a = northDrones[x+y];
                     ret -= a.order_of_key(x+k) - a.order_of_key(x);
                 }
@@ -61,7 +61,7 @@ int main() {
                 eastDrones[x+y].insert(x);
             }else{
 
-                if(eastDrones.contains(x+y)){
+                if(eastDrones.count(x+y)){
                     ordered_set<int> &a = eastDrones[x+y];
                     ret -= a.order_of_key(x+1) - a.order_of_key(x-k+1);
                 }
