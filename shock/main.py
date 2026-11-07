@@ -19,7 +19,7 @@ from calico_lib import Problem, Subproblem, TestFileBase, cpp_runner, py_runner,
 # ---------------------------------------------------------------------------
 MAX_T = 10_000          # 1 <= T
 MAX_CELLS = 1_000_000     # N * M per case, AND sum of N * M across a file
-MAX_Q = 100_000          # Q per case, AND sum of Q across a file
+MAX_Q = 10_000          # Q per case, AND sum of Q across a file
 
 # ---------------------------------------------------------------------------
 # Generator knobs (not part of the problem constraints).

@@ -5,7 +5,7 @@ import sys
 
 MAX_T = 10_000          # 1 <= T
 MAX_CELLS = 1_000_000     # N * M per case, AND sum of N * M across a file
-MAX_Q = 100_000          # Q per case, AND sum of Q across a file
+MAX_Q = 10_000          # Q per case, AND sum of Q across a file
 
 
 
