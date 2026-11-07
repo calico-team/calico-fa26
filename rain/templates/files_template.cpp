@@ -1,15 +1,23 @@
 #include <bits/stdc++.h>
-#define endl '\n'
 using namespace std;
+
+/*
+* Return an integer denoting the amount of rain collected after the Kth nights
+* 
+* N: Number of drones
+* K: Number of nights
+* drone: a tuple in this order {x_coordinate, y_coordinate, z_coordinate, direction} for each drone
+*/
 
 int solve(int N, int K, vector<tuple<int, int, int, char>> drones){
     int answer =0;
 
-    return answer; 
+    return answer;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     int t; cin>>t;
     while (t--){
         int N, K; cin>>N>>K;
