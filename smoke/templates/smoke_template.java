@@ -10,6 +10,7 @@ class Solution {
      * A: List of timestamps where smokes are requested
      */
     static String solve(int N, int R, int[] A) {
+        // YOUR CODE HERE
         return "";
     }
 
@@ -20,7 +21,7 @@ class Solution {
         int T = Integer.parseInt(in.readLine());
 
         for (int i = 0; i < T; i++) {
-			String[] temp = in.readLine().split(" ");
+            String[] temp = in.readLine().split(" ");
             int N = Integer.parseInt(temp[0]);
             int R = Integer.parseInt(temp[1]);
 
@@ -28,8 +29,8 @@ class Solution {
             String[] req = in.readLine().split(" ");
             for (int j = 0; j < N; j++) {
                 A[j] = Integer.parseInt(req[j]);
-            }   
-            
+            }
+
             out.println(solve(N, R, A));
         }
         out.flush();

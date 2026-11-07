@@ -10,6 +10,7 @@ using namespace std;
  * A: List of timestamps where smokes are requested
  */
 string solve(int N, int R, vector<int> A) {
+	// YOUR CODE HERE
 	return "";
 }
 
