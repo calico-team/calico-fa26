@@ -1,7 +1,8 @@
-import java.io.*;
 import java.util.*;
 
 class Solution {
+
+    // Helper class to represent a Drone tuple
     static class Drone {
         int x, y, z;
         char direction;
@@ -25,14 +26,10 @@ class Solution {
         int answer = 0;
         return answer;
     }
-    public static void main(String[] args) throws IOException {
-        FastScanner sc = new FastScanner();
-        PrintWriter out = new PrintWriter(System.out);
 
-        if (!sc.hasNext()) {
-            out.flush();
-            return;
-        }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
 
         int T = sc.nextInt();
         while (T-- > 0) {
@@ -48,44 +45,7 @@ class Solution {
                 drones.add(new Drone(x, y, z, d));
             }
 
-            out.println(solve(N, K, drones));
-        }
-
-        out.flush();
-    }
-
-    static class FastScanner {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        String next() {
-            while (st == null || !st.hasMoreTokens()) {
-                try {
-                    String line = br.readLine();
-                    if (line == null) return null;
-                    st = new StringTokenizer(line);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return st.nextToken();
-        }
-
-        boolean hasNext() {
-            while (st == null || !st.hasMoreTokens()) {
-                try {
-                    String line = br.readLine();
-                    if (line == null) return false;
-                    st = new StringTokenizer(line);
-                } catch (IOException e) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
+            System.out.println(solve(N, K, drones));
         }
     }
 }
