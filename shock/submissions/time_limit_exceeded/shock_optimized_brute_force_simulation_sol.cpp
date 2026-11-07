@@ -4,7 +4,7 @@
 #include <cstring>
 
 static char inbuf[1 << 23];
-static int grid[100005];
+static int grid[1000005];
 static char outbuf[1 << 21];
 static const char* ip;
 
