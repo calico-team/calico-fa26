@@ -13,7 +13,7 @@ class Solution {
         int charges = 2;
         int cooldown = R;
         int idx = 0;
-        for (int t = 0; t < A[N - 1]; t++) {
+        for (int t = 0; t <= A[N - 1]; t++) {
             if (charges == 2) {
                 cooldown = R;
             }
@@ -23,14 +23,14 @@ class Solution {
                     cooldown = R;
                     charges++;
                 }
-                if (A[idx] == t) {
-                    if (charges == 0) {
-                        return "NO";
-                    }
-                    else {
-                        charges--;
-                        idx++;
-                    }
+            }
+            if (idx < N && A[idx] == t) {
+                if (charges == 0) {
+                    return "NO";
+                }
+                else {
+                    charges--;
+                    idx++;
                 }
             }
         }
