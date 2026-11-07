@@ -23,14 +23,14 @@ string solve(int N, int R, vector<int> A) {
 				cooldown = R;
 				currCharges++;
 			}
-			if (A[idx] == t) {
-				if (currCharges == 0) {
-					return "NO";
-				}
-				else {
-					currCharges--;
-					idx++;
-				}
+		}
+		if (idx < N && A[idx] == t) {
+			if (currCharges == 0) {
+				return "NO";
+			}
+			else {
+				currCharges--;
+				idx++;
 			}
 		}
 	}
