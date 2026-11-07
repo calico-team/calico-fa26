@@ -5,23 +5,23 @@ using namespace std;
 
 string solve() {
     int n, r;
-    cin>>n>>r;
-    vector<int> times(n+1);
+    cin >> n >> r;
+    vector<int> times(n + 1);
     times[0] = 0;
 
-    for(int i = 0; i<n; ++i){
-        cin>>times[i+1];
+    for(int i = 0; i < n; ++i){
+        cin >> times[i + 1];
     }
     
-    int wait = 2*r;
+    int wait = 2 * r;
     
-    for(int i = 1; i<=n; ++i){
-        wait += times[i]-times[i-1];
-        wait = min(2*r, wait);
+    for(int i = 1; i <= n; ++i){
+        wait += times[i] - times[i - 1];
+        wait = min(2 * r, wait);
         
-        if(wait >= r){
+        if (wait >= r){
             wait -= r;
-        }else{
+        } else{
             return "NO";
         }
     }
@@ -33,7 +33,6 @@ int main() {
     int T;
     cin >> T;
     for (int i = 0; i < T; i++) {
-       
         cout << solve() << '\n';
     }
 }
