@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 class Solution {
@@ -15,14 +14,9 @@ class Solution {
         return ans;
     }
 
-    public static void main(String[] args) throws IOException {
-        FastScanner sc = new FastScanner();
-        PrintWriter out = new PrintWriter(System.out);
-
-        if (!sc.hasNext()) {
-            out.flush();
-            return;
-        }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
 
         int T = sc.nextInt();
         for (int i = 0; i < T; i++) {
@@ -47,46 +41,8 @@ class Solution {
 
             List<String> result = solve(N, M, Q, G, start, end);
             for (String s : result) {
-                out.println(s);
+                System.out.println(s);
             }
-        }
-
-        out.flush();
-    }
-
-    // Fast I/O helper for competitive programming
-    static class FastScanner {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        String next() {
-            while (st == null || !st.hasMoreTokens()) {
-                try {
-                    String line = br.readLine();
-                    if (line == null) return null;
-                    st = new StringTokenizer(line);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return st.nextToken();
-        }
-
-        boolean hasNext() {
-            while (st == null || !st.hasMoreTokens()) {
-                try {
-                    String line = br.readLine();
-                    if (line == null) return false;
-                    st = new StringTokenizer(line);
-                } catch (IOException e) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
         }
     }
 }
