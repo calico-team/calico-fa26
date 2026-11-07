@@ -128,7 +128,7 @@ def random_small() -> TestFile:
                     Z = random.randrange(1, 11, 2)
 
                 if (X, Y) not in positions:
-                    positions.add((X, Y, Z))
+                    positions.add((X, Y))
                     break
 
             drones.append((X, Y, Z, D))
@@ -159,7 +159,7 @@ def random_medium() -> TestFile:
                     Z = random.randrange(1, 101, 2)
 
                 if (X, Y) not in positions:
-                    positions.add((X, Y, Z))
+                    positions.add((X, Y))
                     break
 
             drones.append((X, Y, Z, D))
@@ -190,7 +190,7 @@ def random_big() -> TestFile:
                     Z = random.randrange(1, 101, 2)
 
                 if (X, Y) not in positions:
-                    positions.add((X, Y, Z))
+                    positions.add((X, Y))
                     break
 
             drones.append((X, Y, Z, D))
