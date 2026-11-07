@@ -9,8 +9,8 @@ using namespace std;
 * drone: a tuple in this order {x_coordinate, y_coordinate, z_coordinate, direction} for each drone
 */
 
-int solve(int N, int K, vector<tuple<int, int, int, char>> drones){
-    int answer =0;
+long long solve(int N, int K, vector<tuple<int, int, int, char>> drones){
+    long long answer =0;
 
     return answer;
 }

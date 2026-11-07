@@ -22,8 +22,8 @@ class Solution {
     - K: Number of nights
     - drones: List of Drone objects containing {x, y, z, direction}
     */
-    static int solve(int N, int K, List<Drone> drones) {
-        int answer = 0;
+    static long solve(int N, int K, List<Drone> drones) {
+        long answer = 0;
         return answer;
     }
 
