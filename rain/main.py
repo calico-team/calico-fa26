@@ -24,9 +24,12 @@ problem_dir = os.path.dirname(__file__)
 
 # Reference solution (auto-generates answers) and input validators.
 # Paths are absolute so generation works from any working directory.
-solution = cpp_runner(
-    os.path.join(problem_dir, 'submissions/accepted/rain.cpp'),
-    os.path.join(problem_dir, 'sol.bin'))
+#solution = cpp_runner(
+#    os.path.join(problem_dir, 'submissions/accepted/rain.cpp'),
+#    os.path.join(problem_dir, 'sol.bin'))
+solution = py_runner(
+    os.path.join(problem_dir, 'submissions/accepted/rain.py')
+)
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
 # ``solution`` is run to produce every answer, so you don't need to override
@@ -39,7 +42,7 @@ p = Problem(
         Subproblem('main', rank=2),
     ],
     solution=solution,
-    seed='rain_fa26_seed')
+    seed='bahrain19239120398210')
 
 class TestCase(NamedTuple):
     N: int
@@ -105,7 +108,7 @@ p.add_hidden_test(TestFile([
 ]), 'hard_edges')
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=5)
-def randomSmall() -> TestFile:
+def random_small() -> TestFile:
     test = TestFile([])
 
     for _ in range(100):
@@ -136,7 +139,7 @@ def randomSmall() -> TestFile:
 
 
 @p.hidden_test_generator(test_count=5)
-def randomMedium() -> TestFile:
+def random_medium() -> TestFile:
     test = TestFile([])
 
     for _ in range(10):
@@ -167,7 +170,7 @@ def randomMedium() -> TestFile:
 
 
 @p.hidden_test_generator(test_count=2)
-def randomBig() -> TestFile:
+def random_big() -> TestFile:
     test = TestFile([])
 
     for _ in range(10):
