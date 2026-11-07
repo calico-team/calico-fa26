@@ -3,16 +3,14 @@
 #include <map>
 using namespace std;
 
-struct Earthquake {
-    int x;
-    int y;
-    int p;
+struct RowQuake { // think of an earthquake as many RowQuakes each affecting only one row
+    int centerX; // same as the center x of the earthquake this RowQuake is from
+    int centerShock; // the maximum amount of shock achieved in this row by the source earthquake. that is, the shock at centerX
 };
-struct Poi{
+struct Start{
     int time;
-    Earthquake earthquake;
-    bool isStart; // if false, then it's an end
-}; // point of interest (of course, you could implement this without a struct but just using four of vector<vector<vector<>>>)
+    RowQuake rowQuake;
+};
 
 void solve(){
     int n, m, q;
@@ -21,7 +19,8 @@ void solve(){
     if(swapDimensions){
         swap(n, m);
     }
-    vector<vector<vector<Poi>>> pois(n,vector<vector<Poi>>(m+1)); // a 2D grid of lists of points of interest (each row is 1 longer than length m because the ending Pois are exclusive)
+    vector<vector<vector<Start>>> starts(n,vector<vector<Start>>(m+1)); // a 2D grid of lists of points of interest (each row is 1 longer than length m because the ending starts are exclusive)
+    vector<vector<vector<int>>> endTimes(n,vector<vector<int>>(m+1));
 
     for(int globalTime = 0; globalTime<q; globalTime++){
         int x, y, r;
@@ -39,28 +38,26 @@ void solve(){
             }
             borderX--;
             // borderX is now as far right as possible while still being in/on the circle
-            pois[borderY][x-(borderX-x)].push_back({globalTime,{x,y,r},true});
-            pois[borderY][borderX+1].push_back({globalTime,{x,y,r},false});
-            pois[y+(y-borderY)][x-(borderX-x)].push_back({globalTime,{x,y,r},true});
-            pois[y+(y-borderY)][borderX+1].push_back({globalTime,{x,y,r},false});
+            starts[borderY][x-(borderX-x)].push_back({globalTime,{x,r*r-(borderY-y)*(borderY-y)+1}});
+            endTimes[borderY][borderX+1].push_back(globalTime);
+            starts[y+(y-borderY)][x-(borderX-x)].push_back({globalTime,{x,r*r-(borderY-y)*(borderY-y)+1}});
+            endTimes[y+(y-borderY)][borderX+1].push_back(globalTime);
         }
     }
 
     vector<vector<int>> answer(n, vector<int>(m, 0));
     for(int y = 0; y < n; y++){
-        map<int,Earthquake> current; // all the circles currently active. this is kinda like a set, but a map works because all the times are unique
+        map<int,RowQuake> current; // all the circles currently active. this is kinda like a set, but a map works because all the times are unique
         for(int x = 0; x < m; x++){
-            for(auto& poi : pois[y][x]){
-                if(poi.isStart){
-                    current[poi.time] = poi.earthquake;
-                }
-                else{
-                    current.erase(poi.time);
-                }
+            for(auto& start : starts[y][x]){
+                current[start.time] = start.rowQuake;
+            }
+            for(auto& endTime : endTimes[y][x]){
+                current.erase(endTime);
             }
             if(current.size()){
-                Earthquake& e = current.rbegin()->second;
-                answer[y][x] = e.p*e.p - ((x-e.x)*(x-e.x) + (y-e.y)*(y-e.y)) + 1;
+                RowQuake& rq = current.rbegin()->second;
+                answer[y][x] = rq.centerShock - (x-rq.centerX)*(x-rq.centerX);
             }
         }
     }
