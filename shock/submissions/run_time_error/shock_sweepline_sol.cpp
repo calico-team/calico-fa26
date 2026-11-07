@@ -3,9 +3,14 @@
 #include <map>
 using namespace std;
 
+struct Earthquake {
+    int x;
+    int y;
+    int p;
+};
 struct Poi{
     int time;
-    char c;
+    Earthquake earthquake;
     bool isStart; // if false, then it's an end
 }; // point of interest (of course, you could implement this without a struct but just using four of vector<vector<vector<>>>)
 
@@ -20,8 +25,7 @@ void solve(){
 
     for(int globalTime = 0; globalTime<q; globalTime++){
         int x, y, r;
-        char c;
-        cin>>x>>y>>c>>r;
+        cin>>x>>y>>r;
         x--; y--;
         if(swapDimensions){
             swap(x, y);
@@ -35,27 +39,28 @@ void solve(){
             }
             borderX--;
             // borderX is now as far right as possible while still being in/on the circle
-            pois[borderY][x-(borderX-x)].push_back({globalTime,c,true});
-            pois[borderY][borderX+1].push_back({globalTime,c,false});
-            pois[y+(y-borderY)][x-(borderX-x)].push_back({globalTime,c,true});
-            pois[y+(y-borderY)][borderX+1].push_back({globalTime,c,false});
+            pois[borderY][x-(borderX-x)].push_back({globalTime,{x,y,r},true});
+            pois[borderY][borderX+1].push_back({globalTime,{x,y,r},false});
+            pois[y+(y-borderY)][x-(borderX-x)].push_back({globalTime,{x,y,r},true});
+            pois[y+(y-borderY)][borderX+1].push_back({globalTime,{x,y,r},false});
         }
     }
 
-    vector<vector<char>> answer(n, vector<char>(m, '.'));
+    vector<vector<int>> answer(n, vector<int>(m, 0));
     for(int y = 0; y < n; y++){
-        map<int,char> current; // all the circles currently active. this is kinda like a set, but a map works because all the times are unique
+        map<int,Earthquake> current; // all the circles currently active. this is kinda like a set, but a map works because all the times are unique
         for(int x = 0; x < m; x++){
             for(auto& poi : pois[y][x]){
                 if(poi.isStart){
-                    current[poi.time] = poi.c;
+                    current[poi.time] = poi.earthquake;
                 }
                 else{
                     current.erase(poi.time);
                 }
             }
             if(current.size()){
-                answer[y][x] = current.rbegin()->second;
+                Earthquake& e = current.rbegin()->second;
+                answer[y][x] = e.p*e.p - ((x-e.x)*(x-e.x) + (y-e.y)*(y-e.y)) + 1;
             }
         }
     }
@@ -63,7 +68,7 @@ void solve(){
     if(swapDimensions){
         for(int x = 0; x < m; x++){
             for(int y = 0; y < n; y++){
-                cout<<answer[y][x];
+                cout<<answer[y][x]<<' ';
             }
             cout<<'\n';
         }
@@ -71,7 +76,7 @@ void solve(){
     else{
         for(int y = 0; y < n; y++){
             for(int x = 0; x < m; x++){
-                cout<<answer[y][x];
+                cout<<answer[y][x]<<' ';
             }
             cout<<'\n';
         }

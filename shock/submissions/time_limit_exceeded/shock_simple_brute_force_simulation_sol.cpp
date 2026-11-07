@@ -1,25 +1,25 @@
 #include <iostream>
 using namespace std;
 
-char grid[100005];
+int grid[1000005];
 
 void solve(){
     int n, m, q;
     cin >> n >> m >> q;
 
-    for (int i = 0; i < n * m; i++) grid[i] = '.';
+    // for (int i = 0; i < n * m; i++) grid[i] = 0;
 
     while (q--) {
         int x, y, r;
-        char c;
-        cin >> x >> y >> c >> r;
+        cin >> x >> y >> r;
         x--; y--;
 
         for (int i = y - r; i <= y + r; i++) {
             for (int j = x - r; j <= x + r; j++) {
                 int dx = j - x, dy = i - y;
-                if (dx * dx + dy * dy <= r * r) {
-                    grid[i * m + j] = c;
+                int shock = r*r - dx*dx - dy*dy + 1;
+                if (shock > 0) {
+                    grid[i * m + j] = shock;
                 }
             }
         }
@@ -27,7 +27,7 @@ void solve(){
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
-            cout << grid[i * m + j];
+            cout << grid[i * m + j] << ' ';
         }
         cout << '\n';
     }

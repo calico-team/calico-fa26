@@ -2,9 +2,11 @@
 
 import sys
 
-MAX_T = 10_000
-MAX_CELLS = 100_000
-MAX_Q = 10_000
+
+MAX_T = 10_000          # 1 <= T
+MAX_CELLS = 1_000_000     # N * M per case, AND sum of N * M across a file
+MAX_Q = 100_000          # Q per case, AND sum of Q across a file
+
 
 
 def main() -> None:
@@ -22,8 +24,7 @@ def main() -> None:
         assert total_cells <= MAX_CELLS
         assert total_q <= MAX_Q
         for _ in range(q):
-            x, y, color, radius = int(next(it)), int(next(it)), next(it), int(next(it))
-            assert len(color) == 1 and 'A' <= color <= 'Z'
+            x, y, radius = int(next(it)), int(next(it)), int(next(it))
             assert radius >= 0
             assert 1 + radius <= x <= m - radius
             assert 1 + radius <= y <= n - radius
