@@ -1,0 +1,23 @@
+#!/bin/sh
+
+TESTIN="$1";  shift
+PROGOUT="$1"; shift
+
+MYDIR="$(dirname "$0")"
+
+# Skip any intermediate arguments until the contestant command (starts with 'sudo')
+while [ "$#" -gt 0 ] && [ "$1" != "sudo" ]; do
+    shift
+done
+
+# Locate runpipe on the judgehost
+RUNPIPE="runpipe"
+for p in ../../dj-bin/runpipe ../dj-bin/runpipe /opt/domjudge/judgehost/bin/runpipe $(command -v runpipe 2>/dev/null); do
+    if [ -x "$p" ]; then
+        RUNPIPE="$p"
+        break
+    fi
+done
+
+# Connect the jury interactor (run.py) and the contestant program ("$@")
+exec "$RUNPIPE" ${DEBUG:+-v} python3 "$MYDIR/run.py" "$TESTIN" = "$@"
