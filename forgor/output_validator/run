@@ -76,13 +76,12 @@ else: # Phase 2
 	testans_split = testans_raw.strip().splitlines()
 
 	for i in range(N - 1):
-		actual = team_output_split[i].strip().split()
-		expected = testans_split[i + 1].strip().split()
+		team_edges = sorted(tuple(map(int, line.strip().split())) for line in team_output_split if line.strip())
+		ans_edges = sorted(tuple(map(int, line.strip().split())) for line in testans_split[1:] if line.strip())
 
-		if actual != expected:
+		if team_edges != ans_edges:
 			with open(judge_msg, "w") as f:
 				f.write("Phase 2 failure: output does not match expected output.\n")
-			print(f"expected: {expected}, got: {actual}", file=sys.stderr)
 			sys.exit(EXIT_WA)
 
 	sys.exit(EXIT_AC)
