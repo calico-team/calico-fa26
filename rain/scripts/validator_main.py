@@ -10,7 +10,7 @@ def solve(N: int, K: int, drones: list[tuple[int, int, int, str]]) -> int:
     for X, Y, Z, D in drones:
         assert 0 <= X <= 10**5
         assert 0 <= Y <= 10**5
-        assert 0 <= Z <= 100
+        assert 0 <= Z <= 10**5
         assert D in ('E', 'N')
         assert (X,Y) not in position
         position.add((X, Y))

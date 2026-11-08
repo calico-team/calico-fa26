@@ -185,9 +185,9 @@ def random_big() -> TestFile:
                 Y = random.randint(1, 10**5)
                 D = random.choice(['E', 'N'])
                 if D == 'N':
-                    Z = random.randrange(2, 101, 2)
+                    Z = random.randrange(2, 10**5, 2)
                 else:
-                    Z = random.randrange(1, 101, 2)
+                    Z = random.randrange(1, 10**5, 2)
 
                 if (X, Y) not in positions:
                     positions.add((X, Y))
