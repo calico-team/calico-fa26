@@ -16,7 +16,7 @@ def solve(N, M, K, P):
     pq = []
     for i in range(N):
         if P[i] == -1:
-            dfs(P[i])
+            dfs(i)
             heapq.heappush(pq, (-h[i], i))
     ans = 0
     for i in range(M):
