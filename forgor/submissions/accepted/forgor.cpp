@@ -11,7 +11,7 @@ int main() {
         // convert edge representation to parent list representation
         vector<int> P(N + 1, -1);
         vector<int> C(N + 2, 0);
-        for (int i = 1; i < N + 1; i++) {
+        for (int i = 0; i < N - 1; i++) {
             int p, c; cin >> p >> c;
 
             P[c] = p;
@@ -41,7 +41,7 @@ int main() {
                 int childrenParity = (int)(A[i] & 1); // take bottom bit
                 int parent = (int)(A[i] >> 1); // take remaining bits
                 P[i] = parent;
-                expParity[i + 1] = childrenParity; // convert to 1 indexing, expect vertex i+1 to have numChildren children 
+                expParity[i] = childrenParity; // convert to 1 indexing, expect vertex i+1 to have numChildren children 
             }
             else {
                 idx = i;
