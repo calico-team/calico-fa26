@@ -1,7 +1,7 @@
 import java.util.*;
 
 /*
-* Output an N by M grid displaying the reading of the block seismometers after all earthquakes occur.
+* Return an N by M grid displaying the reading of the block seismometers after all earthquakes occur.
 *
 * N: number of rows in the grid
 * M: number of columns in the grid
@@ -13,8 +13,9 @@ import java.util.*;
 */
 class Solution {
 
-    public static void solve(int N, int M, int Q, List<int[]> earthquakes) {
+    public static int[][] solve(int N, int M, int Q, List<int[]> earthquakes) {
         //Code here
+        return new int[N][M];
     }
 
     public static void main(String[] args) {
@@ -31,7 +32,14 @@ class Solution {
                 int P = sc.nextInt();
                 earthquakes.add(new int[]{X, Y, P});
             }
-            solve(N, M, Q, earthquakes);
+            int[][] answer = solve(N, M, Q, earthquakes);
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (j > 0) System.out.print(" ");
+                    System.out.print(answer[i][j]);
+                }
+                System.out.println();
+            }
         }
         sc.close();
     }

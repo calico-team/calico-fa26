@@ -1,5 +1,5 @@
 """
-*Output an N by M grid displaying the reading of the block seismometers after all earthquakes occur.
+*Return an N by M grid displaying the reading of the block seismometers after all earthquakes occur.
 *
 *N: number of rows in the grid
 *M: number of columns in the grid
@@ -10,7 +10,8 @@
 *    P: power of the earthquake
 """
 def solve(N, M, Q, earthquakes):
-    pass
+    # YOUR CODE HERE
+    return [[0] * M for _ in range(N)]
 
 
 def main():
@@ -21,7 +22,9 @@ def main():
         for i in range(Q):
             X, Y, P = map(int, input().split())
             earthquakes.append((X, Y, P))
-        solve(N, M, Q, earthquakes)
+        answer = solve(N, M, Q, earthquakes)
+        for row in answer:
+            print(' '.join(map(str, row)))
 
 if __name__ == '__main__':
     main()
