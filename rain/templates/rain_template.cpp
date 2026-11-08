@@ -29,7 +29,7 @@ int main() {
         for (int i = 0; i < N; i++){
             int X, Y, Z;
             char D;
-            cin>>X>>Y>>Z>>d;
+            cin>>X>>Y>>Z>>D;
             L.push_back({X, Y, Z, D});
         }
         cout<<solve(N, K, L)<<endl;
