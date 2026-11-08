@@ -8,7 +8,7 @@ void solve() {
     cin >> n >> m >> q;
     bool swapDimensions = (m > n);   // make rows short: m <= n
     if (swapDimensions) swap(n, m);
-
+    
     vector<int> xs(q), ys(q), rs(q);
     for (int i = 0; i < q; i++) {
         int x, y, r;
@@ -20,8 +20,11 @@ void solve() {
 
     vector<set<int>> freeCols(n);
     for (int y = 0; y < n; y++) {
-        auto hint = freeCols[y].end();
-        for (int x = 0; x < m; x++) hint = freeCols[y].insert(hint, x);
+        // auto hint = freeCols[y].end();
+        // for (int x = 0; x < m; x++) hint = freeCols[y].insert(hint, x);
+        for (int x = 0; x < m; x++) {
+            freeCols[y].insert(x);
+        }
     }
 
     vector<vector<int>> answer(n, vector<int>(m, 0));

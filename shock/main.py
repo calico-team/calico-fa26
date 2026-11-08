@@ -10,20 +10,16 @@ from calico_lib import Problem, Subproblem, TestFileBase, cpp_runner, py_runner,
 
 
 
-# this is claude's translation of the cases for the older version (color chars) to be for the new version
+# this is claude's translation/update of the cases for the older version (color chars) to be for the new version
 
 
+# 1 <= T
+# N * M per case, AND sum of N * M across a file
+# Q per case, AND sum of Q across a file
+MAX_T = 10_000
+MAX_CELLS = 1_000_000
+MAX_Q = 20_000
 
-# ---------------------------------------------------------------------------
-# Constraints. Change these and every generator below adapts.
-# ---------------------------------------------------------------------------
-MAX_T = 10_000          # 1 <= T
-MAX_CELLS = 1_000_000     # N * M per case, AND sum of N * M across a file
-MAX_Q = 10_000          # Q per case, AND sum of Q across a file
-
-# ---------------------------------------------------------------------------
-# Generator knobs (not part of the problem constraints).
-# ---------------------------------------------------------------------------
 NEAR_MAX_JITTER = 3             # "near-max" power is max_power - randint(0, this)
 SMALL_POWER_CAP = 5             # power cap for the "small quakes on a big grid" test
 ASPECT_RATIOS = (4, 100)        # long side / short side for the rectangular max-size tests
@@ -48,7 +44,7 @@ p = Problem(
     PROBLEM_NAME,
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=3, time_limit=4, mem_limit=1_000_000_000)
+        Subproblem('main', rank=3, time_limit=4) #, mem_limit=100_000_000)
     ],
     solution=solution,
     seed='shock_seed_678128904567890',
