@@ -1,0 +1,5 @@
+name: "forgor"
+type: pass-fail multi-pass
+validation: custom multi-pass
+limits:
+  validation_passes: 2

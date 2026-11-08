@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+import sys
+import os
+
+testin_path = sys.argv[1]
+testans_path = sys.argv[2]
+feedback_dir = sys.argv[3]
+
+EXIT_AC = 42
+EXIT_WA = 43
+
+marker_file = os.path.join(feedback_dir, "pass1_complete")
+nextpass_in = os.path.join(feedback_dir, "nextpass.in")
+judge_msg = os.path.join(feedback_dir, "judgemessage.txt")
+judge_err = os.path.join(feedback_dir, "judgeerror.txt")
+
+team_output = sys.stdin.read()
+team_output_split = team_output.strip().splitlines()
+
+with open(testin_path, 'r') as f:
+	testin_raw = f.read()
+
+testin_lines = testin_raw.strip().splitlines()
+N = int(testin_lines[1].strip())
+
+if not os.path.exists(marker_file): # Phase 1
+	# WA if empty
+	if not team_output.strip():
+		with open(judge_msg, "w") as f:
+			f.write("Phase 1: Program generated empty output.\n")
+		sys.exit(EXIT_WA)
+
+	# -- Construct phase 2 input ---
+	phase2_in = ["SECOND", str(N)]
+
+	with open(testans_path, "r") as f:
+		testans_raw = f.read()
+
+	testans_split = testans_raw.strip().splitlines()
+	remove_idx = int(testans_split[0].strip())
+
+	if len(team_output_split) != 1:
+		with open(judge_err, "w") as f:
+			f.write(f"Number of lines in output does not match expected number of lines: expected {1}, got {len(team_output_split)}")
+		sys.exit(EXIT_WA)
+
+	A = list(map(int, team_output_split[0].split()))
+	if len(A) != N:
+		with open(judge_err, "w") as f:
+			f.write(f"Length of output list does not match expected length: expected {N}, got {len(A)}")
+		sys.exit(EXIT_WA)
+
+	A[remove_idx] = -1
+
+	phase2_in.append(
+		f"{" ".join(map(str, A))}\n"
+	)
+
+	# --- Write Phase 2 input ---
+	with open(nextpass_in, "w") as f:
+		f.write("\n".join(phase2_in))
+
+	with open(marker_file, "w") as f:
+		f.write("Finished Phase 1")
+	
+	sys.exit(EXIT_AC)
+else: # Phase 2
+    if len(team_output_split) != (N - 1):
+        with open(judge_msg, "w") as f:
+            f.write(f"Number of lines in output does not match expected number of lines: expected {N - 1}, got {len(team_output_split)}")
+        sys.exit(EXIT_WA)
+
+    with open(testans_path, "r") as f:
+        testans_raw = f.read()
+
+    testans_split = testans_raw.strip().splitlines()
+
+    team_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in team_output_split if line.strip())
+    ans_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in testans_split[1:] if line.strip())
+
+    if team_edges != ans_edges:
+        with open(judge_msg, "w") as f:
+            f.write("Phase 2 failure: output does not match expected output.\n")
+        sys.exit(EXIT_WA)
+
+    sys.exit(EXIT_AC)
