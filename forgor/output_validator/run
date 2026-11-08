@@ -50,6 +50,12 @@ if not os.path.exists(marker_file): # Phase 1
 			f.write(f"Length of output list does not match expected length: expected {N}, got {len(A)}")
 		sys.exit(EXIT_WA)
 
+    for i in A:
+        if not 0 <= i <= 1000000:
+            with open(judge_err, "w") as f:
+                f.write(f"Values in A should be in range [0, 1e6]: got {i}")
+            sys.exit(EXIT_WA)
+
 	A[remove_idx] = -1
 
 	phase2_in.append(
