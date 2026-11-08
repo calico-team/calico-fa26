@@ -35,7 +35,7 @@ p = Problem(
     'matcha',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=4),
+        Subproblem('main', rank=4, time_limit=2),
     ],
     solution=solution,
     seed='matchaaaaaaa')
@@ -103,7 +103,6 @@ def brute_force() -> TestFile:
                         test.cases.append(TestCase(4, L, R))
     return test
 
-
 @p.hidden_test_generator(test_count=4)
 def pure_random_2() -> TestFile:
     test = TestFile([])
@@ -141,6 +140,78 @@ def pure_random_200000() -> TestFile:
         R.append(random.randint(L[-1], (1 << 30) - 1))
     test.cases.append(TestCase(N, L, R))
     return test
+
+import subprocess
+B = 30
+MAXV = (1 << B) - 1
+
+def all_ones_cap(R):
+    """The trivial answer: all ones up to the top bit of OR(R)."""
+    o = 0
+    for r in R:
+        o |= r
+    return (1 << o.bit_length()) - 1
+ 
+def ref_answers(cases):
+    """Run the compiled reference on a list of TestCase; return the answers."""
+    inp = [str(len(cases))]
+    for c in cases:
+        inp += [str(c.N), ' '.join(map(str, c.L)), ' '.join(map(str, c.R))]
+    out = subprocess.run([os.path.join(problem_dir, 'matcha.bin')],
+                         input='\n'.join(inp) + '\n',
+                         capture_output=True, text=True, check=True).stdout
+    return list(map(int, out.split()))
+ 
+def shuffled_case(L, R):
+    idx = list(range(len(L)))
+    random.shuffle(idx)
+    return TestCase(len(L), [L[i] for i in idx], [R[i] for i in idx])
+ 
+def split_sizes(total, T, mn=3):
+    """Random sizes for T cases summing to total, each at least mn."""
+    extra = total - mn * T
+    cuts = sorted(random.randint(0, extra) for _ in range(T - 1))
+    return [mn + y - x for x, y in zip([0] + cuts, cuts + [extra])]
+
+
+def straddle_case(n):
+    """
+    Narrow intervals that cross an odd multiple of 2^k at a few high levels k,
+    so high bits are real choices that pin the low bits; the rest is narrow
+    filler that never crosses a 2^g0 boundary. Rerolls if the answer is all ones.
+    """
+    while True:
+        wmax = random.randint(2, 8)                       # widths < 2^wmax
+        g0 = min(B - 2, wmax + random.randint(1, 4))      # filler stays inside 2^g0 blocks
+        K = random.sample(range(g0, B), min(random.randint(2, 6), B - g0))
+        L, R = [], []
+        for k in K:                                       # straddlers at level k
+            for _ in range(random.choice([1, 1, 2, 3, 5, 20, 200])):
+                if len(L) >= n:
+                    break
+                X = random.randrange(1, 1 << (B - k), 2) << k   # odd multiple of 2^k
+                L.append(max(0, X - random.randint(1, 1 << wmax)))
+                R.append(min(MAXV, X + random.randint(1, 1 << wmax) - 1))
+        while len(L) < n:                                 # filler
+            w = random.randint(0, (1 << random.randint(0, wmax)) - 1)
+            q = random.randrange(1 << (B - g0))
+            lo = random.randrange((1 << g0) - w)
+            L.append((q << g0) | lo)
+            R.append((q << g0) | (lo + w))
+        case = shuffled_case(L, R)
+        if ref_answers([case])[0] != all_ones_cap(case.R):
+            return case
+ 
+@p.hidden_test_generator(test_count=3)
+def straddle_large() -> TestFile:
+    """One case with N = 2e5."""
+    return TestFile([straddle_case(200000)])
+ 
+@p.hidden_test_generator(test_count=2)
+def straddle_multi() -> TestFile:
+    """50 cases with random sizes summing to 2e5."""
+    return TestFile([straddle_case(n) for n in split_sizes(200000, 50)])
+
 
 def main():
     # Run cli (try `python main.py --help`)
