@@ -19,35 +19,29 @@ from calico_lib import (
     run_cli,
 )
 
-# All generated files live under this directory.
 problem_dir = os.path.dirname(__file__)
 
-# Reference solution (auto-generates answers) and input validators.
-# Paths are absolute so generation works from any working directory.
-solution = py_runner(os.path.join(problem_dir, 'scripts/generate_output.py'))
 validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
-# ``solution`` is run to produce every answer, so you don't need to override
-# ``write_test_out``. ``seed`` is handled by the library: it calls
-# ``random.seed`` before each test, so you can't forget to seed.
 p = Problem(
     'forgor',
     problem_dir,
     test_sets=[
         Subproblem('main', rank=3),
     ],
-    solution=solution,
+    solution=None,
     seed='did i really just forget that melody')
 
 class TestCase(NamedTuple):
     N: int
-    P: list[int]
+    E: list[tuple[int, int]]
+    R: int # index of value that will be erased in phase 2
 
 @p.pre_gen_fn
 def pre_gen_fn():
     """Compile the cpp solution once before generation (the library won't)."""
-    solution.compile()
+    pass
 
 class TestFile(TestFileBase):
     def __init__(self, cases: Iterable[TestCase]) -> None:
@@ -56,11 +50,18 @@ class TestFile(TestFileBase):
 
     @override
     def write_test_in(self) -> str:
-        lines = [str(len(self.cases)) + " 1"]
+        lines = ["FIRST"]
+
+        assert len(self.cases) == 1, f'More than 1 test case found in test file'
         for case in self.cases:
             lines.append(f'{case.N}')
-            lines.append(' '.join(map(str, case.P)))
+            for i in range(case.N - 1):
+                lines.append(' '.join(map(str, case.E[i])))
         return '\n'.join(lines) + '\n'
+
+    @override
+    def write_test_out(self, infile: str) -> str:
+        return f'{self.cases[0].R}'
 
     @override
     def validate_test_in(self, infile: str) -> None:
@@ -69,47 +70,118 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(3, [2, 1, 2])
+    TestCase(3, [(1, 2), (1, 3)], 0)
 ]))
 
-# Iterative DFS-like random tree generation
-def generate_tree(N):
+def generate_tree_dfs(N, branch_factor=8):
     available_nodes = list(range(1, N + 1))
-    parent = [-1] * N
+    random.shuffle(available_nodes)
+    edges = []
 
-    root = random.choice(available_nodes)
-    parent[root - 1] = root
-    available_nodes.remove(root)
-
+    root = available_nodes.pop()
     path = [root]
+
     while available_nodes and path:
-        num_children = random.randint(0, max(1, len(available_nodes) // 8)) 
-        if num_children == 0:
-            path.pop()
-            continue
+        parent = path.pop() 
+
+        max_children = max(1, len(available_nodes) // branch_factor)
+        num_children = min(len(available_nodes), random.randint(1, max_children) )
 
         nodes = []
-        for i in range(num_children):
-            node = random.choice(available_nodes)
+        for _ in range(num_children):
+            node = available_nodes.pop()
             nodes.append(node)
-            available_nodes.remove(node)
-            parent[node - 1] = path[-1]
+            edges.append((parent, node))
 
         path.extend(nodes)
 
-    return [] if available_nodes else parent
+    while available_nodes:
+        edges.append((root, available_nodes.pop()))
+
+    return edges
+
+def generate_tree_bfs(N, branch_factor=8):
+    nodes = list(range(1, N + 1))
+    random.shuffle(nodes)
+    
+    edges = []
+    parent_queue = [nodes[0]]
+    queue_idx = 0
+    next_node_idx = 1
+    
+    while next_node_idx < N and queue_idx < len(parent_queue):
+        parent = parent_queue[queue_idx]
+        queue_idx += 1
+        
+        remaining = N - next_node_idx
+        max_children = max(1, remaining // branch_factor)
+        num_children = min(remaining, random.randint(1, max_children))
+        
+        for _ in range(num_children):
+            child = nodes[next_node_idx]
+            edges.append((parent, child))
+            parent_queue.append(child)
+            next_node_idx += 1
+            
+    while next_node_idx < N:
+        edges.append((random.choice(nodes[:next_node_idx]), nodes[next_node_idx]))
+        next_node_idx += 1
+        
+    return edges
+
+# Aldous-Broder algorithm (?!)
+def generate_tree_uniform(N):
+    edges = []
+    visited = {random.randint(1, N)}
+    current = next(iter(visited))
+
+    while len(visited) < N:
+        neighbor = random.randint(1, N)
+        if neighbor not in visited:
+            visited.add(neighbor)
+            edges.append((current, neighbor))
+        current = neighbor
+
+    return edges
 
 # Random tests are factories too, for the same seeding reason.
-@p.hidden_test_generator(test_count=4)
-def pure_random() -> TestFile:
+@p.hidden_test_generator(test_count=5)
+def pure_random_dfs() -> TestFile:
     """Generate a test file with 10 random cases, valid for every subproblem."""
     test = TestFile([])
-    for _ in range(10):
-        N = random.randint(2, 1023)
-        tree = []
-        while not tree:
-            tree = generate_tree(N)
-        test.cases.append(TestCase(N, tree))
+
+    N = random.randint(2, int(2e5))
+    tree = []
+    while not tree:
+        tree = generate_tree_dfs(N)
+    R = random.randint(0, N - 1)
+    test.cases.append(TestCase(N, tree, R))
+    return test
+
+@p.hidden_test_generator(test_count=5)
+def pure_random_bfs() -> TestFile:
+    """Generate a test file with 10 random cases, valid for every subproblem."""
+    test = TestFile([])
+
+    N = random.randint(2, int(2e5))
+    tree = []
+    while not tree:
+        tree = generate_tree_bfs(N)
+    R = random.randint(0, N - 1)
+    test.cases.append(TestCase(N, tree, R))
+    return test
+
+@p.hidden_test_generator(test_count=10)
+def pure_random_uniform() -> TestFile:
+    """Generate a test file with 10 random cases, valid for every subproblem."""
+    test = TestFile([])
+
+    N = random.randint(2, int(2e5))
+    tree = []
+    while not tree:
+        tree = generate_tree_uniform(N)
+    R = random.randint(0, N - 1)
+    test.cases.append(TestCase(N, tree, R))
     return test
 
 def main():

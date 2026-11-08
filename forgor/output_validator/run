@@ -8,8 +8,6 @@ feedback_dir = sys.argv[3]
 
 EXIT_AC = 42
 EXIT_WA = 43
-CASE_DELIM = "---NEW CASE---"
-OUTPUT_DELIM = "---EXPECTED OUTPUT---"
 
 marker_file = os.path.join(feedback_dir, "pass1_complete")
 nextpass_in = os.path.join(feedback_dir, "nextpass.in")
