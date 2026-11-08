@@ -57,7 +57,7 @@ int main() {
         for (auto& a : Rs[t]) scanf("%d", &a);
         sumN += n;
     }
-    const double TOTAL = 1.7;  // seconds of total budget
+    const double TOTAL = 0.85;  // seconds of total budget
     double used = 0;
 
     for (int t = 0; t < T; ++t) {

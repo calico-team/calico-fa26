@@ -35,7 +35,7 @@ p = Problem(
     'matcha',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=4, time_limit=2),
+        Subproblem('main', rank=4),
     ],
     solution=solution,
     seed='matchaaaaaaa')
