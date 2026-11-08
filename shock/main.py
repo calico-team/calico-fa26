@@ -44,7 +44,7 @@ p = Problem(
     PROBLEM_NAME,
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=3, time_limit=4) #, mem_limit=100_000_000)
+        Subproblem('main', rank=3) #, time_limit=4) #, mem_limit=100_000_000)
     ],
     solution=solution,
     seed='shock_seed_678128904567890',
