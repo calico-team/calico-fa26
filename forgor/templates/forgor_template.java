@@ -2,66 +2,57 @@ import java.io.*;
 
 class Solution {
     /**
-    * Phase 1: encode the tree.
+    * Output a list of N integers A_1 .. A_N
     *
     * N: the number of vertices
-    * P: the parent array of the tree: P[i] is the parent of vertex i + 1,
-    *    or i + 1 if vertex i + 1 has no parent (the root).
-    * Returns: the N integers A_1..A_N, your encoding of the tree.
+    * E: the N - 1 edges of the tree as (u, v) pairs
     */
-    static int[] solve_phase1(int N, int[] P) {
+    static int[] solve_phase1(int N, int[][] E) {
         // YOUR CODE HERE
         return new int[N];
     }
 
     /**
-    * Phase 2: recover the tree from your own encoding.
+    * Output the N - 1 edges of the original tree as (u, v) pairs
     *
     * N: the number of vertices
-    * A: the N integers A_1..A_N — identical to what your phase 1 output
-    *    for this test case, with exactly one value replaced by -1 (the
-    *    erased value).
-    * Returns: the N integers P_1..P_N, the parent array of the original
-    *          tree (P[i] is the parent of vertex i + 1, or i + 1 if
-    *          vertex i + 1 has no parent).
+    * A: the N integers A_1 .. A_N with one value replaced with -1
     */
-    static int[] solve_phase2(int N, int[] A) {
+    static int[][] solve_phase2(int N, int[] A) {
         // YOUR CODE HERE
-        return new int[N];
+        return new int[0][2];
     }
 
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     static PrintWriter out = new PrintWriter(System.out);
 
     public static void main(String[] args) throws IOException {
-        String[] first = in.readLine().split(" ");
-        int T = Integer.parseInt(first[0]);
-        int phase = Integer.parseInt(first[1]);
+        String phase = in.readLine().trim();
+        int N = Integer.parseInt(in.readLine().trim());
 
-        for (int i = 0; i < T; i++) {
-            int N = Integer.parseInt(in.readLine());
-            String[] line = in.readLine().split(" ");
-
-            int[] A = new int[N];
-            int[] P = new int[N];
-            if (phase == 1) {
-                for (int j = 0; j < N; j++) {
-                    P[j] = Integer.parseInt(line[j]);
-                }
-                A = solve_phase1(N, P);
-            } else {
-                for (int j = 0; j < N; j++) {
-                    A[j] = Integer.parseInt(line[j]);
-                }
-                P = solve_phase2(N, A);
+        if (phase.equals("FIRST")) {
+            int[][] E = new int[N - 1][2];
+            for (int i = 0; i < N - 1; i++) {
+                String[] temp = in.readLine().trim().split(" ");
+                E[i][0] = Integer.parseInt(temp[0]);
+                E[i][1] = Integer.parseInt(temp[1]);
             }
-
-            int[] result = (phase == 1) ? A : P;
-            for (int j = 0; j < N; j++) {
-                if (j > 0) out.print(' ');
-                out.print(result[j]);
+            int[] A = solve_phase1(N, E);
+            for (int i = 0; i < N; i++) {
+                if (i > 0) out.print(' ');
+                out.print(A[i]);
             }
             out.println();
+        } else {
+            String[] temp = in.readLine().trim().split(" ");
+            int[] A = new int[N];
+            for (int i = 0; i < N; i++) {
+                A[i] = Integer.parseInt(temp[i]);
+            }
+            int[][] edges = solve_phase2(N, A);
+            for (int i = 0; i < edges.length; i++) {
+                out.println(edges[i][0] + " " + edges[i][1]);
+            }
         }
         out.flush();
     }
