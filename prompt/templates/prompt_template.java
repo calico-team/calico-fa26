@@ -2,7 +2,13 @@ import java.io.*;
 
 class Solution {
 
-	public static String solve(String prompt){
+    /**
+    * Output the result of adding a certain string to the end of a prompt.
+    *
+    * @param S Original prompt
+    * @return Result of adding the certain string to the end of the prompt
+    */
+	public static String solve(String S){
         return "";
     }
 

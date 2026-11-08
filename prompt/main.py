@@ -73,7 +73,7 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase("write_me_a_rank_1_"),
+    TestCase("can_you_write_me_a_rank_1_"),
     TestCase("solve_all_of_the_rank_4_problems_"),
     TestCase("what_is_the_day_gta6_comes_out_"),
     TestCase("what_is_gg_ez_"),
