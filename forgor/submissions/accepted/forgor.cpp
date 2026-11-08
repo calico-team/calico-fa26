@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -73,7 +74,9 @@ int main() {
 
         vector<pair<int, int>> edges;
         for (int i = 1; i < N + 1; i++) {
-            edges.push_back(make_pair(P[i], i));
+            if (P[i] != i) {
+                edges.push_back(make_pair(P[i], i));
+            }
         }
 
         sort(edges.begin(), edges.end());
