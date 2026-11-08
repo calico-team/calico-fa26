@@ -90,6 +90,7 @@ p.add_hidden_test(TestFile([
     TestCase(6, 2, 3, [3, 4, 0, 0, 0, 0]),
     TestCase(6, 2, 3, [0, 0, 0, 0, 1, 2]),
     TestCase(12, 6, 2, [0, 1, 2, 3, 4, 5, 0, 7, 7, 0, 10, 10]),
+    TestCase(4, 2, 2, [0, 4, 0, 0])
 ]), 'edges')
 
 # Random tests are factories too, for the same seeding reason.
