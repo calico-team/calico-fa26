@@ -21,7 +21,6 @@ from calico_lib import (
 
 problem_dir = os.path.dirname(__file__)
 
-validator = py_runner(os.path.join(problem_dir, 'scripts/validator.py'))
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
 p = Problem(
