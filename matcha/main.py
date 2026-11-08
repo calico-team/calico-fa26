@@ -26,6 +26,7 @@ problem_dir = os.path.dirname(__file__)
 solution = cpp_runner(
     os.path.join(problem_dir, 'submissions/accepted/matcha.cpp'),
     os.path.join(problem_dir, 'matcha.bin'))
+solution.compile_cmd.insert(1, '-std=c++17')
 validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'))
 
 # ``solution`` is run to produce every answer, so you don't need to override
@@ -217,6 +218,44 @@ def straddle_multi() -> TestFile:
     """50 cases with random sizes summing to 2e5."""
     return TestFile([straddle_case(n) for n in split_sizes(200000, 50)])
 
+def load_traps(name):
+    traps = []
+    for line in open(os.path.join(problem_dir, 'scripts', name)):
+        head, Ls, Rs = line.split('|')
+        g = int(head.split()[0])
+        traps.append((g, list(map(int, Ls.split())), list(map(int, Rs.split()))))
+    return traps 
+
+def trap_case(traps, n):
+    """Scale a trap up by 2^s (low bits free), add random fixed top bits and narrow filler."""
+    g, tl, tr = random.choice([t for t in traps if len(t[1]) <= n])
+    k = len(tl)
+    s = random.randint(0, B - g)
+    top = B - g - s
+    tops = [random.randrange(1 << top) if top else 0 for _ in range(n)]
+    L, R = [], []
+    for i in range(k):
+        L.append((tops[i] << (g + s)) | (tl[i] << s))
+        R.append((tops[i] << (g + s)) | (tr[i] << s) | ((1 << s) - 1))
+    mids = [random.randrange(1 << g) for _ in range(n - k)]
+    if mids:
+        x = 0
+        for v in mids[:-1]: x ^= v
+        mids[-1] = x                          # filler cancels on the trap's bits
+    for j in range(n - k):
+        hi = (tops[k + j] << (g + s)) | (mids[j] << s)
+        if s == 0:
+            L.append(hi); R.append(hi)
+        else:
+            w = random.randint(0, (1 << random.randint(0, s)) - 1)
+            lo = random.randrange((1 << s) - w)
+            L.append(hi | lo); R.append(hi | (lo + w))
+    return shuffled_case(L, R)
+
+@p.hidden_test_generator(test_count=2)
+def trap_local_search_hugeT() -> TestFile:
+    traps = load_traps('traps_ls.txt')
+    return TestFile([trap_case(traps, 3) for _ in range(66666)])
 
 def main():
     # Run cli (try `python main.py --help`)
