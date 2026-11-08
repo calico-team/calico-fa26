@@ -61,7 +61,13 @@ class TestFile(TestFileBase):
 
     @override
     def write_test_out(self, infile: str) -> str:
-        return f'{self.cases[0].R}'
+        case = self.cases[0]
+        lines = [str(case.R)]
+
+        for i in range(case.N - 1):
+            lines.append(' '.join(map(str, case.E[i])))
+
+        return '\n'.join(lines) + '\n'
 
     @override
     def validate_test_in(self, infile: str) -> None:

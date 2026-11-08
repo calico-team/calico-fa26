@@ -35,13 +35,14 @@ int main() {
 
         vector<int> P(N + 1, -1);
         vector<int> expParity(N + 2, -1);
-        int idx = -1; // index with missing value
+        int idx = -1, root = -1; // index with missing value
         for (int i = 1; i < N + 1; i++) {
             if (A[i] != -1) {
                 int childrenParity = (int)(A[i] & 1); // take bottom bit
                 int parent = (int)(A[i] >> 1); // take remaining bits
                 P[i] = parent;
                 expParity[i] = childrenParity; // convert to 1 indexing, expect vertex i+1 to have numChildren children 
+                if (parent == i) root = i;
             }
             else {
                 idx = i;
@@ -59,6 +60,7 @@ int main() {
 
         bool fixed = false; // whether we have edited the parent array
         for (int i = 1; i < N + 1; i++) {
+            if (i == root) continue;
             // if we have an expected parity but this doesn't match the parity of the actual number, this must be the parent of the missing vertex
             if (expParity[i] != -1 && expParity[i] != (C[i] % 2)) {
                 P[idx] = i;
@@ -69,7 +71,7 @@ int main() {
 
         // if we didn't find any mismatches, the missing vertex must be its own parent, i.e. it's the root
         if (!fixed) {
-            P[idx] = idx;
+            P[idx] = (root != -1) ? root : idx;
         }
 
         vector<pair<int, int>> edges;
