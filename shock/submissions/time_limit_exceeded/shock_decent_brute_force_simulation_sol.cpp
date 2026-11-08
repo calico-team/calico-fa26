@@ -12,7 +12,6 @@ void solve(){
     while (q--) {
         int y, x, r;
         cin >> y >> x >> r;
-        x--; y--;
 
         int rr = r * r;
         int dx = r;

@@ -20,7 +20,6 @@ void solve(){
     for(int i = 0; i<q; i++){
         int y, x, r;
         cin>>y>>x>>r;
-        x--; y--;
         if(swapDimensions){
             swap(x, y);
         }

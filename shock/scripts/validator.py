@@ -23,10 +23,10 @@ def main() -> None:
         assert total_cells <= MAX_CELLS
         assert total_q <= MAX_Q
         for _ in range(q):
-            x, y, radius = int(next(it)), int(next(it)), int(next(it))
+            y, x, radius = int(next(it)), int(next(it)), int(next(it))
             assert radius >= 0
-            assert 1 + radius <= x <= m - radius
-            assert 1 + radius <= y <= n - radius
+            assert radius <= x <= m - 1 - radius
+            assert radius <= y <= n - 1 - radius
 
     try:
         next(it)

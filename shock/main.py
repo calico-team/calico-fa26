@@ -51,9 +51,7 @@ p = Problem(
 )
 
 
-# ---------------------------------------------------------------------------
-# Data model.  Coordinates: x = column in [1, M], y = row in [1, N].
-# ---------------------------------------------------------------------------
+# btw 0 indexed now
 class Quake(NamedTuple):
     x: int      # column of epicenter
     y: int      # row of epicenter
@@ -99,7 +97,7 @@ class TestFile(TestFileBase):
         lines = [str(len(self.cases))]
         for case in self.cases:
             lines.append(f'{case.rows} {case.cols} {len(case.quakes)}')
-            lines.extend(f'{q.y} {q.x} {q.power}' for q in case.quakes)
+            lines.extend(f'{q.y - 1} {q.x - 1} {q.power}' for q in case.quakes)
         return '\n'.join(lines) + '\n'
 
     @override
