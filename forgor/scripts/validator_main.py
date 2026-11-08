@@ -23,6 +23,7 @@ def main():
         p, c = map(int, input().split(" "))
         assert 1 <= p <= N
         assert 1 <= c <= N
+        assert p != c
 
         e[p].append(c)
         e[c].append(p)

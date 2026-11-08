@@ -97,7 +97,6 @@ def generate_tree_dfs(N, branch_factor=8):
         for _ in range(num_children):
             node = available_nodes.pop()
             nodes.append(node)
-            edges.append((parent, node))
             if random.random() < 0.5:
                 edges.append((parent, node))
             else:
@@ -107,6 +106,8 @@ def generate_tree_dfs(N, branch_factor=8):
 
     while available_nodes:
         edges.append((root, available_nodes.pop()))
+
+    random.shuffle(edges)
 
     return edges
 
@@ -139,6 +140,8 @@ def generate_tree_bfs(N, branch_factor=8):
     while next_node_idx < N:
         edges.append((random.choice(nodes[:next_node_idx]), nodes[next_node_idx]))
         next_node_idx += 1
+
+    random.shuffle(edges)
         
     return edges
 
@@ -152,12 +155,13 @@ def generate_tree_uniform(N):
         neighbor = random.randint(1, N)
         if neighbor not in visited:
             visited.add(neighbor)
-            edges.append((current, neighbor))
             if random.random() < 0.5:
                 edges.append((current, neighbor))
             else:
                 edges.append((neighbor, current))
         current = neighbor
+
+    random.shuffle(edges)
 
     return edges
 
