@@ -6,10 +6,14 @@ using namespace std;
 * 
 * N: Number of drones
 * K: Number of nights
-* drone: a tuple in this order {x_coordinate, y_coordinate, z_coordinate, direction} for each drone
+* L: a list in this order [X, Y, Z, D] for each drone
+*   X: Starting X location of Drone
+*   Y: Starting Y location of Drone
+*   Z: Starting Z location of Drone
+*   D: Starting direction of Drone
 */
 
-long long solve(int N, int K, vector<tuple<int, int, int, char>> drones){
+long long solve(int N, int K, vector<tuple<int, int, int, char>> L){
     long long answer =0;
 
     return answer;
@@ -21,13 +25,13 @@ int main() {
     int t; cin>>t;
     while (t--){
         int N, K; cin>>N>>K;
-        vector<tuple<int, int, int, char>> drones;
+        vector<tuple<int, int, int, char>> L;
         for (int i = 0; i < N; i++){
-            int x, y, z;
-            char d;
-            cin>>x>>y>>z>>d;
-            drones.push_back({x, y, z, d});
+            int X, Y, Z;
+            char D;
+            cin>>X>>Y>>Z>>d;
+            L.push_back({X, Y, Z, D});
         }
-        cout<<solve(N, K, drones)<<endl;
+        cout<<solve(N, K, L)<<endl;
     }
 }

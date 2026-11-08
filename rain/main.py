@@ -47,7 +47,7 @@ p = Problem(
 class TestCase(NamedTuple):
     N: int
     K: int
-    drones: list[tuple[int, int, int, str]]
+    L: list[tuple[int, int, int, str]]
 
 @p.pre_gen_fn
 def pre_gen_fn():
@@ -66,7 +66,7 @@ class TestFile(TestFileBase):
 
         for case in self.cases:
             lines.append(f'{case.N} {case.K}')
-            for X, Y, Z, D in case.drones:
+            for X, Y, Z, D in case.L:
                 lines.append(f'{X} {Y} {Z} {D}')
 
         return '\n'.join(lines) + '\n'
@@ -114,7 +114,7 @@ def random_small() -> TestFile:
     for _ in range(100):
         N = random.randint(90, 100)
         K = random.randint(1, 10**9)
-        drones = []
+        L = []
         positions = set()
 
         for _ in range(N):
@@ -131,9 +131,9 @@ def random_small() -> TestFile:
                     positions.add((X, Y))
                     break
 
-            drones.append((X, Y, Z, D))
+            L.append((X, Y, Z, D))
 
-        test.cases.append(TestCase(N, K, drones))
+        test.cases.append(TestCase(N, K, L))
 
     return test
 
@@ -145,7 +145,7 @@ def random_medium() -> TestFile:
     for _ in range(10):
         N = random.randint(100, 1000)
         K = random.randint(1, 10**9)
-        drones = []
+        L = []
         positions = set()
 
         for _ in range(N):
@@ -162,9 +162,9 @@ def random_medium() -> TestFile:
                     positions.add((X, Y))
                     break
 
-            drones.append((X, Y, Z, D))
+            L.append((X, Y, Z, D))
 
-        test.cases.append(TestCase(N, K, drones))
+        test.cases.append(TestCase(N, K, L))
 
     return test
 
@@ -176,7 +176,7 @@ def random_big() -> TestFile:
     for _ in range(10):
         N = random.randint(1, 10**5)
         K = random.randint(1, 10**9)
-        drones = []
+        L = []
         positions = set()
 
         for _ in range(N):
@@ -193,9 +193,9 @@ def random_big() -> TestFile:
                     positions.add((X, Y))
                     break
 
-            drones.append((X, Y, Z, D))
+            L.append((X, Y, Z, D))
 
-        test.cases.append(TestCase(N, K, drones))
+        test.cases.append(TestCase(N, K, L))
 
     return test
 

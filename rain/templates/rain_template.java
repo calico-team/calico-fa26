@@ -4,25 +4,29 @@ class Solution {
 
     // Helper class to represent a Drone tuple
     static class Drone {
-        int x, y, z;
-        char direction;
+        int X, Y, Z;
+        char D;
 
-        Drone(int x, int y, int z, char direction) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.direction = direction;
+        Drone(int X, int Y, int Z, char D) {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+            this.D = D;
         }
     }
 
     /*
-    - Return an integer denoting the amount of rain collected after the Kth nights
-    - 
-    - N: Number of drones
-    - K: Number of nights
-    - drones: List of Drone objects containing {x, y, z, direction}
+    * Return an integer denoting the amount of rain collected after the Kth nights
+    * 
+    * N: Number of drones
+    * K: Number of nights
+    * L: a list in this order [X, Y, Z, D] for each drone
+    *   X: Starting X location of Drone
+    *   Y: Starting Y location of Drone
+    *   Z: Starting Z location of Drone
+    *   D: Starting direction of Drone
     */
-    static long solve(int N, int K, List<Drone> drones) {
+    static long solve(int N, int K, List<Drone> L) {
         long answer = 0;
         return answer;
     }
@@ -36,16 +40,16 @@ class Solution {
             int N = sc.nextInt();
             int K = sc.nextInt();
 
-            List<Drone> drones = new ArrayList<>();
+            List<Drone> L = new ArrayList<>();
             for (int i = 0; i < N; i++) {
-                int x = sc.nextInt();
-                int y = sc.nextInt();
-                int z = sc.nextInt();
-                char d = sc.next().charAt(0);
-                drones.add(new Drone(x, y, z, d));
+                int X = sc.nextInt();
+                int Y = sc.nextInt();
+                int Z = sc.nextInt();
+                char D = sc.next().charAt(0);
+                L.add(new Drone(X, Y, Z, D));
             }
 
-            System.out.println(solve(N, K, drones));
+            System.out.println(solve(N, K, L));
         }
     }
 }
