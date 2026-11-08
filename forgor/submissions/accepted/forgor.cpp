@@ -11,12 +11,21 @@ int main() {
         // convert edge representation to parent list representation
         vector<int> P(N + 1, -1);
         vector<int> C(N + 2, 0);
-        for (int i = 0; i < N - 1; i++) {
-            int p, c; cin >> p >> c;
-
-            P[c] = p;
-            C[p]++;
-        }
+		vector<vector<int>> adj(N + 1);
+		auto dfs = [&](auto&& self, int node, int p) -> void {
+			P[node] = p;
+			if (P[node] != -1) ++C[P[node]];
+			for (int i : adj[node]) {
+				if (i == p) continue;
+				self(self, i, node);
+			}
+		};
+		for (int i = 0; i < N - 1; ++i) {
+			int u, v; cin >> u >> v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		dfs(dfs, 1, -1);
 
         // bottom bit encodes parity of number of children, remaining bits encode parent
         for (int i = 1; i < N + 1; i++) {
