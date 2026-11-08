@@ -62,9 +62,7 @@ class TestFile(TestFileBase):
         lines = [str(len(self.cases))]
         for case in self.cases:
             lines.append(f'{case.N} {case.R}')
-            A = ""
-            for a in case.A:
-                A += str(a) + " "
+            A = " ".join(map(str, case.A))
             lines.append(A)
         return "\n".join(lines) + "\n"
 
