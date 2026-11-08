@@ -39,7 +39,7 @@ p = Problem(
     'galaxy2',
     problem_dir,
     test_sets=[
-        Subproblem('main', rank=3),
+        Subproblem('main', rank=3, time_limit=4),
     ],
     solution=solution,
     seed='mario')
@@ -84,8 +84,8 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
-    TestCase(2,4,2,[".RB.", ".RB."],[(1,0),(1,3)],[(1,2),(0,3)],[10,0]),
-    TestCase(9,9,3,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"],[(0,8),(8,1),(8,7)],[(4,5),(2,8),(0,1)],[5,3,0])
+    TestCase(2,4,2,[".RB.", ".RB."],[(1,0),(1,3)],[(1,2),(0,3)],[10,1]),
+    TestCase(9,9,3,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"],[(0,8),(8,1),(8,7)],[(4,5),(2,8),(0,1)],[8,12,20])
 ]))
 
 # Hidden tests are secret (not shown to contestants).
@@ -113,27 +113,27 @@ p.add_sample_test(TestFile([
 
 p.add_hidden_test(TestFile([
     TestCase(1,1,1,["."],[(0,0)],[(0,0)],[0]),
-    TestCase(1,5,2,[".RB.."],[(0,0),(0,3)],[(0,4),(0,4)],[1000000000,0]),
+    TestCase(1,5,2,[".RB.."],[(0,0),(0,3)],[(0,4),(0,4)],[1000000000,1]),
     TestCase(4,1,1,[".","R","R","B"],[(0,0)],[(3,0)],[3]),
     TestCase(4,1,1,[".","B","B","B"],[(0,0)],[(3,0)],[1000000000]),
     TestCase(2,2,1,[".B","BR"],[(0,0)],[(1,1)],[1000000000]),
-    TestCase(2,2,1,["..",".R"],[(0,0)],[(1,1)],[0]),
-    TestCase(1,4,1,[".R.B"],[(0,0)],[(0,3)],[2]),
-    TestCase(3,3,3,["BRB","R.R","BRB"],[(1,1),(1,1),(1,1)],[(1,1),(0,1),(0,0)],[0,1,1000000000]),
-    TestCase(1,5,2,[".BBB."],[(0,0),(0,4)],[(0,4),(0,0)],[0,7]),
-    TestCase(1,5,3,[".BRB."],[(0,0),(0,0),(0,4)],[(0,4),(0,1),(0,2)],[1000000000,0,1]),
-    TestCase(1,5,2,[".RRRB"],[(0,0),(0,0)],[(0,3),(0,4)],[0,1000000000]),
-    TestCase(3,3,2,["RRR","RBR","RR."],[(2,2),(2,2)],[(1,1),(0,0)],[4,1])
+    TestCase(2,2,1,["..",".R"],[(0,0)],[(1,1)],[2]),
+    TestCase(1,4,1,[".R.B"],[(0,0)],[(0,3)],[5]),
+    TestCase(3,3,3,["BRB","R.R","BRB"],[(1,1),(1,1),(1,1)],[(1,1),(0,1),(0,0)],[0,2,1000000000]),
+    TestCase(1,5,2,[".BBB."],[(0,0),(0,4)],[(0,4),(0,0)],[3,4]),
+    TestCase(1,5,3,[".BRB."],[(0,0),(0,0),(0,4)],[(0,4),(0,1),(0,2)],[1000000000,1,1]),
+    TestCase(1,5,2,[".RRRB"],[(0,0),(0,0)],[(0,3),(0,4)],[3,1000000000]),
+    TestCase(3,3,2,["RRR","RBR","RR."],[(2,2),(2,2)],[(1,1),(0,0)],[4,5])
 ]), 'edges')
 
 # Random tests are factories too, for the same seeding reason.
 @p.hidden_test_generator(test_count=2)
 def pure_random() -> TestFile:
     test = TestFile([])
-    total = 2 * 10**5
+    total = 4 * 10**4
     while len(test.cases) < 100 and total > 0:
-        N = random.randint(1, min(200, total))
-        M = random.randint(1, min(200, total // N))
+        N = random.randint(1, min(10, total))
+        M = random.randint(1, min(4000, total // N))
         Q = random.randint(1, 1000)
         total -= N * M
         G = []
@@ -155,47 +155,90 @@ def pure_random() -> TestFile:
         end = []
         K = []
         for i in range(Q):
-            start.append(random.choice(normal_tiles))
-            end.append((random.randint(0, N-1), random.randint(0, M-1)))
-            K.append(random.randint(0, 3))
+            s = random.choice(normal_tiles)
+            e = (random.randint(0, N-1), random.randint(0, M-1))
+            start.append(s)
+            end.append(e)
+            K.append(abs(s[0] - e[0]) + abs(s[1] - e[1]) + random.randint(0, 6))
 
         test.cases.append(TestCase(N, M, Q, G, start, end, K))
     return test
+
+def snake(N: int, M: int, pattern: str) -> tuple[list[str], list[tuple[int, int]]]:
+    grid = [['R' if (i + j) % 2 else 'B' for j in range(M)] for i in range(N)]
+    path = []
+    for k in range(0, N, 3):
+        cols = range(M) if k // 3 % 2 == 0 else range(M-1, -1, -1)
+        for j in cols:
+            path.append((k, j))
+        if k + 3 < N:
+            j = M-1 if k // 3 % 2 == 0 else 0
+            path.append((k+1, j))
+            path.append((k+2, j))
+    for i, (row, col) in enumerate(path):
+        grid[row][col] = pattern[i % len(pattern)]
+    return [''.join(row) for row in grid], path
+
+def chain_cases(flip: bool) -> TestFile:
+    N, M, Q = 10, 4000, 10**5
+    if flip:
+        G, path = snake(M, N, '.RR.BB')
+    else:
+        G, path = snake(N, M, '.RR.BB')
+
+    start = []
+    end = []
+    K = []
+    for i in range(Q):
+        s = random.randrange(0, len(path), 3)
+        e = random.randrange(len(path))
+        start.append(path[s])
+        end.append(path[e])
+        K.append(max(0, abs(e - s) * 4 // 3 + random.randint(-2, 2)))
+
+    if flip:
+        G = [''.join(G[i][j] for i in range(M)) for j in range(N)]
+        start = [(col, row) for row, col in start]
+        end = [(col, row) for row, col in end]
+
+    return TestFile([TestCase(N, M, Q, G, start, end, K)])
+
+@p.hidden_test_generator(test_count=1)
+def regions() -> TestFile:
+    N, M, Q = 10, 4000, 10**5
+    G, path = snake(N, M, '.R.B')
+    half = len(path) // 2
+    start = []
+    end = []
+    K = []
+    for i in range(Q):
+        start.append(path[random.randrange(0, half, 2)])
+        end.append(path[random.randrange(half, len(path))])
+        K.append(10**9)
+    return TestFile([TestCase(N, M, Q, G, start, end, K)])
 
 @p.hidden_test_generator(test_count=1)
 def chain() -> TestFile:
-    test = TestFile([])
-    for t in range(5):
-        N, M, Q = 200, 200, 20000
-        grid = [['R' if (i + j) % 2 else 'B' for j in range(M)] for i in range(N)]
-        path = []
-        for k in range(0, N, 3):
-            cols = range(M) if k // 3 % 2 == 0 else range(M-1, -1, -1)
-            for j in cols:
-                path.append((k, j))
-            if k + 3 < N:
-                j = M-1 if k // 3 % 2 == 0 else 0
-                path.append((k+1, j))
-                path.append((k+2, j))
-        for i, (row, col) in enumerate(path):
-            grid[row][col] = '.RR.BB'[i % 6]
-        G = [''.join(row) for row in grid]
+    return chain_cases(False)
 
-        start = []
-        end = []
-        K = []
-        for i in range(Q):
-            start.append(path[random.randrange(0, len(path), 3)])
-            end.append(random.choice(path))
-            K.append(random.randint(0, len(path) // 3))
+@p.hidden_test_generator(test_count=1)
+def chain_flipped() -> TestFile:
+    return chain_cases(True)
 
-        if t % 2 == 1:
-            G = [''.join(G[i][j] for i in range(N)) for j in range(M)]
-            start = [(col, row) for row, col in start]
-            end = [(col, row) for row, col in end]
-
-        test.cases.append(TestCase(N, M, Q, G, start, end, K))
-    return test
+@p.hidden_test_generator(test_count=1)
+def normal_grid() -> TestFile:
+    N, M, Q = 10, 4000, 10**5
+    G = ['.' * M for _ in range(N)]
+    start = []
+    end = []
+    K = []
+    for i in range(Q):
+        s = (random.randint(0, N-1), random.randint(0, M-1))
+        e = (random.randint(0, N-1), random.randint(0, M-1))
+        start.append(s)
+        end.append(e)
+        K.append(abs(s[0] - e[0]) + abs(s[1] - e[1]) + random.randint(0, 2))
+    return TestFile([TestCase(N, M, Q, G, start, end, K)])
 
 # @p.hidden_test_generator(test_count=4, subproblems=['bonus'])
 # def pure_random2() -> TestFile:

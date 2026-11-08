@@ -1,6 +1,6 @@
 def solve(N: int, M: int, Q: int, G: list[str], start: list[tuple[int, int]], end: list[tuple[int, int]], K: list[int]) -> list[str]:
-    assert 1 <= N <= 200
-    assert 1 <= M <= 200
+    assert 1 <= N <= 10
+    assert 1 <= M <= 4000
     assert 1 <= Q <= 10**5
 
     assert len(G) == N
@@ -33,7 +33,7 @@ def main():
     for _ in range(T):
         N, M, Q = map(int, input().split())
         total_cells += N * M
-        assert total_cells <= 2 * 10**5
+        assert total_cells <= 4 * 10**4
         total_queries += Q
         assert total_queries <= 10**5
         G = []
