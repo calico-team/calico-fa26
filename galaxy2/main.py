@@ -84,6 +84,7 @@ class TestFile(TestFileBase):
 
 # Sample tests are shown to contestants; added to all subproblems by default.
 p.add_sample_test(TestFile([
+    TestCase(2,4,2,[".R.B", ".RRB"],[(0,0),(1,0)],[(1,3),(1,3)],[6,6]),
     TestCase(2,4,2,[".RB.", ".RB."],[(1,0),(1,3)],[(1,2),(0,3)],[10,1]),
     TestCase(9,9,3,["BR.R.R.R.", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "BRBRBRBRB", "B.B.B.B.B"],[(0,8),(8,1),(8,7)],[(4,5),(2,8),(0,1)],[8,12,20])
 ]))
