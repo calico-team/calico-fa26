@@ -6,14 +6,14 @@ import java.util.*;
 * N: number of rows in the grid
 * M: number of columns in the grid
 * Q: number of earthquakes
-* earthquake: a list of arrays {X, Y, P}, where:
+* earthquakes: a list of arrays {X, Y, P}, where:
 *     X: column of the epicenter
 *     Y: row of the epicenter
 *     P: power of the earthquake
 */
 class Solution {
 
-    public static void solve(int N, int M, int Q, List<int[]> earthquake) {
+    public static void solve(int N, int M, int Q, List<int[]> earthquakes) {
         //Code here
     }
 
@@ -24,14 +24,14 @@ class Solution {
             int N = sc.nextInt();
             int M = sc.nextInt();
             int Q = sc.nextInt();
-            List<int[]> earthquake = new ArrayList<>();
+            List<int[]> earthquakes = new ArrayList<>();
             for (int i = 0; i < Q; i++) {
                 int X = sc.nextInt();
                 int Y = sc.nextInt();
                 int P = sc.nextInt();
-                earthquake.add(new int[]{X, Y, P});
+                earthquakes.add(new int[]{X, Y, P});
             }
-            solve(N, M, Q, earthquake);
+            solve(N, M, Q, earthquakes);
         }
         sc.close();
     }
