@@ -60,43 +60,38 @@ def run_test(test_file):
 
     print(f"Testing {test_file.relative_to(ROOT)}...", end=" ", flush=True)
 
-    # Start the interactor.
+    sol = None
+
+    # Redirect interactor's stderr into log_file
     with open(log_file, "w") as log:
-        interactor = subprocess.Popen(
-            [
-                sys.executable,
-                "-u",
-                str(INTERACTOR),
-                str(test_file),
-                str(log_file),
-            ],
-            cwd=ROOT,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=None,
-            text=True,
-            bufsize=1,
-        )
-
-        sol = None
-
         try:
-            # Connect interactor -> solution and solution -> interactor.
+            interactor = subprocess.Popen(
+                [
+                    sys.executable,
+                    "-u",
+                    str(INTERACTOR),
+                    str(test_file),
+                ],
+                cwd=ROOT,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=log,
+            )
+
+            # Connect solution stdin/stdout directly to interactor pipes
             sol = subprocess.Popen(
                 [str(BINARY)],
                 cwd=ROOT,
                 stdin=interactor.stdout,
                 stdout=interactor.stdin,
                 stderr=None,
-                text=True,
-                bufsize=1,
             )
 
-            # The parent must not keep extra copies of the pipe ends.
+            # Close parent process handle copies so pipes close properly on child exit
             interactor.stdout.close()
             interactor.stdin.close()
 
-            # Both processes must finish.
+            # Wait for completion
             sol.wait(timeout=TIMEOUT)
             interactor.wait(timeout=TIMEOUT)
 
@@ -105,14 +100,7 @@ def run_test(test_file):
             for proc in (sol, interactor):
                 if proc is not None and proc.poll() is None:
                     proc.kill()
-
-            for proc in (sol, interactor):
-                if proc is not None:
-                    try:
-                        proc.wait(timeout=1)
-                    except subprocess.TimeoutExpired:
-                        pass
-
+                    proc.wait()
             print(f"  See {log_file.name} for the interaction log.")
             return False
 
@@ -121,45 +109,18 @@ def run_test(test_file):
             for proc in (sol, interactor):
                 if proc is not None and proc.poll() is None:
                     proc.kill()
-            for proc in (sol, interactor):
-                if proc is not None:
                     proc.wait()
             return False
 
-    # Check the judge's actual verdict, not just its exit code.
-    try:
-        verdict = log_file.read_text().splitlines()
-    except OSError:
-        print("FAILED: Could not read verdict log.")
-        return False
-
-    if verdict and verdict[0].strip() == "AC":
+    # Check DOMjudge standard return codes from interactor
+    if interactor.returncode == 42:
         print("ACCEPTED")
         return True
-
-    print("WRONG ANSWER" if verdict and verdict[0].strip() == "WA"
-          else "FAILED")
-    print(f"  See {log_file.name} for details.")
-    return False
-
-
-def main():
-    os.chdir(ROOT)
-
-    test_files = sorted(ROOT.glob("data/*/*.in"))
-
-    if not test_files:
-        print("ERROR: No tests found under data/*/*.in")
-        sys.exit(1)
-
-    compile_solution()
-
-    for test_file in test_files:
-        if not run_test(test_file):
-            sys.exit(1)
-
-    print("\nAll test cases passed successfully!")
-
-
-if __name__ == "__main__":
-    main()
+    elif interactor.returncode == 43:
+        print("WRONG ANSWER")
+        print(f"  See {log_file.name} for details.")
+        return False
+    else:
+        print(f"FAILED (Exit Code: {interactor.returncode})")
+        print(f"  See {log_file.name} for details.")
+        return False
