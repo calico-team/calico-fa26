@@ -1,3 +1,6 @@
+MAX_CHAIN = 900
+
+
 def solve(N: int, M: int, K: int, P: list[int]) -> int:
     """
     Validate one test case. P[i] is the 1-indexed prerequisite of task i+1,
@@ -10,14 +13,23 @@ def solve(N: int, M: int, K: int, P: list[int]) -> int:
     for p in P:
         assert 0 <= p <= N
 
-    reaches_root = {0}
+    # depth[v] = number of tasks on the prerequisite chain ending at v
+    # (a task with no prerequisite has depth 1). 0 means not yet computed.
+    depth = [0] * (N + 1)
     for task in range(1, N + 1):
-        path = set()
-        while task not in reaches_root:
-            assert task not in path
-            path.add(task)
+        path = []
+        on_path = set()
+        while task != 0 and depth[task] == 0:
+            assert task not in on_path
+            on_path.add(task)
+            path.append(task)
             task = P[task - 1]
-        reaches_root |= path
+        d = depth[task] if task != 0 else 0
+        for v in reversed(path):
+            d += 1
+            depth[v] = d
+        # Keeps the recursive DFS in sol.py under Python's recursion limit.
+        assert d <= MAX_CHAIN
     return 0
 
 

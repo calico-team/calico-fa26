@@ -2,7 +2,6 @@ import heapq
 
 def solve(N, M, K, P):
     h = [-1 for _ in range(N)]
-    ins = [False for _ in range(N)]
     adj = [[] for _ in range(N)]
     for i in range(N):
         P[i] -= 1
