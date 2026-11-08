@@ -139,11 +139,13 @@ p.add_hidden_test(TestFile([
 def random_cases(fixed_end: bool) -> TestFile:
     test = TestFile([])
     total = 2 * 10**5
-    while len(test.cases) < 100 and total > 0:
+    total_queries = 10**5
+    while len(test.cases) < 100 and total > 0 and total_queries > 0:
         N = random.randint(1, min(200, total))
         M = random.randint(1, min(200, total // N))
-        Q = random.randint(1, 1000)
+        Q = random.randint(1, min(10**5, total_queries))
         total -= N * M
+        total_queries -= Q
         G = []
         normal_tiles = []
         for i in range(N):
@@ -182,7 +184,7 @@ def pure_random_bonus() -> TestFile:
 def split_cases(fixed_end: bool) -> TestFile:
     test = TestFile([])
     for _ in range(5):
-        N, M, Q = 200, 200, 1000
+        N, M, Q = 200, 200, 20000
         wall = M // 2 - 1
         G = []
         for i in range(N):
