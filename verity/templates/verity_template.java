@@ -11,7 +11,7 @@ class Solution {
      * K: Number of different -ities
      * A: List containing the different -ities
      */
-    static void solve(int N, int K, String[] A) {
+    static void solve(int N, int K, String[] A) throws IOException {
         // YOUR CODE HERE
     }
 
