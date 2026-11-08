@@ -75,8 +75,8 @@ else: # Phase 2
 
     testans_split = testans_raw.strip().splitlines()
 
-    team_edges = sorted(tuple(map(int, line.strip().split())) for line in team_output_split if line.strip())
-    ans_edges = sorted(tuple(map(int, line.strip().split())) for line in testans_split[1:] if line.strip())
+    team_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in team_output_split if line.strip())
+    ans_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in testans_split[1:] if line.strip())
 
     if team_edges != ans_edges:
         with open(judge_msg, "w") as f:
