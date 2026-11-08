@@ -50,11 +50,11 @@ if not os.path.exists(marker_file): # Phase 1
 			f.write(f"Length of output list does not match expected length: expected {N}, got {len(A)}")
 		sys.exit(EXIT_WA)
 
-    for i in A:
-        if not 0 <= i <= 1000000:
-            with open(judge_err, "w") as f:
-                f.write(f"Values in A should be in range [0, 1e6]: got {i}")
-            sys.exit(EXIT_WA)
+	for i in A:
+		if not 0 <= i <= 1000000:
+			with open(judge_err, "w") as f:
+				f.write(f"Values in A should be in range [0, 1e6]: got {i}")
+			sys.exit(EXIT_WA)
 
 	A[remove_idx] = -1
 
@@ -71,22 +71,22 @@ if not os.path.exists(marker_file): # Phase 1
 	
 	sys.exit(EXIT_AC)
 else: # Phase 2
-    if len(team_output_split) != (N - 1):
-        with open(judge_msg, "w") as f:
-            f.write(f"Number of lines in output does not match expected number of lines: expected {N - 1}, got {len(team_output_split)}")
-        sys.exit(EXIT_WA)
+	if len(team_output_split) != (N - 1):
+		with open(judge_msg, "w") as f:
+			f.write(f"Number of lines in output does not match expected number of lines: expected {N - 1}, got {len(team_output_split)}")
+		sys.exit(EXIT_WA)
 
-    with open(testans_path, "r") as f:
-        testans_raw = f.read()
+	with open(testans_path, "r") as f:
+		testans_raw = f.read()
 
-    testans_split = testans_raw.strip().splitlines()
+	testans_split = testans_raw.strip().splitlines()
 
-    team_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in team_output_split if line.strip())
-    ans_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in testans_split[1:] if line.strip())
+	team_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in team_output_split if line.strip())
+	ans_edges = sorted(sorted(tuple(map(int, line.strip().split()))) for line in testans_split[1:] if line.strip())
 
-    if team_edges != ans_edges:
-        with open(judge_msg, "w") as f:
-            f.write("Phase 2 failure: output does not match expected output.\n")
-        sys.exit(EXIT_WA)
+	if team_edges != ans_edges:
+		with open(judge_msg, "w") as f:
+			f.write("Phase 2 failure: output does not match expected output.\n")
+		sys.exit(EXIT_WA)
 
-    sys.exit(EXIT_AC)
+	sys.exit(EXIT_AC)
