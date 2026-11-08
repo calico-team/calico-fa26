@@ -99,7 +99,7 @@ class TestFile(TestFileBase):
         lines = [str(len(self.cases))]
         for case in self.cases:
             lines.append(f'{case.rows} {case.cols} {len(case.quakes)}')
-            lines.extend(f'{q.x} {q.y} {q.power}' for q in case.quakes)
+            lines.extend(f'{q.y} {q.x} {q.power}' for q in case.quakes)
         return '\n'.join(lines) + '\n'
 
     @override

@@ -10,8 +10,8 @@ void solve(){
     for (int i = 0; i < n * m; i++) grid[i] = 0;
 
     while (q--) {
-        int x, y, r;
-        cin >> x >> y >> r;
+        int y, x, r;
+        cin >> y >> x >> r;
         x--; y--;
 
         for (int i = y - r; i <= y + r; i++) {

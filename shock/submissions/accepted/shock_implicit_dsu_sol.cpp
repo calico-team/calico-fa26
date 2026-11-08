@@ -18,8 +18,8 @@ void solve(){
     }
     vector<int> xs, ys, rs;
     for(int i = 0; i<q; i++){
-        int x, y, r;
-        cin>>x>>y>>r;
+        int y, x, r;
+        cin>>y>>x>>r;
         x--; y--;
         if(swapDimensions){
             swap(x, y);

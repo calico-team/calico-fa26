@@ -19,8 +19,8 @@ void solve(){
 
     vector<int> xs(q), ys(q), rs(q);
     for(int globalTime = 0; globalTime< q; globalTime++){
-        int x, y, r;
-        cin>>x>>y>>r;
+        int y, x, r;
+        cin>>y>>x>>r;
         x--; y--;
         if(swapDimensions){
             swap(x, y);

@@ -29,8 +29,8 @@ int main() {
         memset(grid, 0, sizeof(int) * (size_t)n * m); // zeroing is still fine
 
         while (q--) {
-            int x = readInt() - 1;
             int y = readInt() - 1;
+            int x = readInt() - 1;
             int r = readInt();
             int rr = r * r;
 
