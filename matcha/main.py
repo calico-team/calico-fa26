@@ -107,7 +107,7 @@ def brute_force() -> TestFile:
 @p.hidden_test_generator(test_count=4)
 def pure_random_2() -> TestFile:
     test = TestFile([])
-    for _ in range(100):
+    for _ in range(100000):
         N = 2
         L = []
         R = []
@@ -130,23 +130,10 @@ def pure_random_3() -> TestFile:
         test.cases.append(TestCase(N, L, R))
     return test
 
-@p.hidden_test_generator(test_count=2)
-def pure_random_2000() -> TestFile:
-    test = TestFile([])
-    for _ in range(100):
-        N = random.randint(1, 2000)
-        L = []
-        R = []
-        for i in range(N):
-            L.append(random.randint(0, (1 << 30) - 1))
-            R.append(random.randint(L[-1], (1 << 30) - 1))
-        test.cases.append(TestCase(N, L, R))
-    return test
-
-@p.hidden_test_generator(test_count=2)
+@p.hidden_test_generator(test_count=1)
 def pure_random_200000() -> TestFile:
     test = TestFile([])
-    N = 200000
+    N = random.randint(150000, 200000)
     L = []
     R = []
     for i in range(N):
