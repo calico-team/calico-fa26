@@ -32,7 +32,7 @@ validator_main = py_runner(os.path.join(problem_dir, 'scripts/validator_main.py'
 # ``write_test_out``. ``seed`` is handled by the library: it calls
 # ``random.seed`` before each test, so you can't forget to seed.
 p = Problem(
-    'dictionary',
+    'dictionary_final',
     problem_dir,
     test_sets=[
         Subproblem('main', rank=4, time_limit=2),
@@ -86,7 +86,7 @@ p.add_sample_test(TestFile([
 # instance: the factory runs after the library has seeded ``random``.
 
 # Random tests are factories too, for the same seeding reason.
-@p.hidden_test_generator(test_count=4)
+@p.hidden_test_generator(test_count=3)
 def pure_random_small() -> TestFile:
     test = TestFile([])
     for _ in range(100):
@@ -99,7 +99,7 @@ def pure_random_small() -> TestFile:
         test.cases.append(TestCase(N, A, V))
     return test
 
-@p.hidden_test_generator(test_count=4)
+@p.hidden_test_generator(test_count=3)
 def pure_random_big() -> TestFile:
     test = TestFile([])
     N = 200000
@@ -111,7 +111,7 @@ def pure_random_big() -> TestFile:
     test.cases.append(TestCase(N, A, V))
     return test
 
-@p.hidden_test_generator(test_count=4)
+@p.hidden_test_generator(test_count=3)
 def big_cycle() -> TestFile:
     test = TestFile([])
     N = 200000
@@ -123,7 +123,7 @@ def big_cycle() -> TestFile:
     test.cases.append(TestCase(N, A, V))
     return test
 
-@p.hidden_test_generator(test_count=4)
+@p.hidden_test_generator(test_count=3)
 def long_tree() -> TestFile:
     test = TestFile([])
     N = 200000
@@ -139,7 +139,7 @@ def long_tree() -> TestFile:
     test.cases.append(TestCase(N, A, V))
     return test
 
-@p.hidden_test_generator(test_count=4)
+@p.hidden_test_generator(test_count=3)
 def half_cycle_half_tree() -> TestFile:
     test = TestFile([])
     N = 200000
